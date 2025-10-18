@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import './HamburgerMenu.css';
 
-function HamburgerMenu() {
+function HamburgerMenu({ darkMode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [modalUrl, setModalUrl] = useState(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const openInModal = (url) => {
+    setModalUrl(url);
+    setIsOpen(false);
+  };
+
+  const closeModal = () => {
+    setModalUrl(null);
+  };
+
   const links = [
-    { name: 'Yearigy', url: '#' },
-    { name: 'Blog', url: '#' },
-    { name: 'Articlay', url: '#' }
+    { name: 'Yearigy', url: 'https://yearigy.com' },
+    { name: 'Blog', url: 'https://blog.example.com' },
+    { name: 'Articlay', url: 'https://articlay.com' }
   ];
 
   return (
@@ -30,15 +40,31 @@ function HamburgerMenu() {
           <ul className="menu-links">
             {links.map((link, index) => (
               <li key={index}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                <button onClick={() => openInModal(link.url)} className="menu-link-btn">
                   {link.name}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
           <button className="close-menu" onClick={toggleMenu}>Close</button>
         </div>
       </div>
+
+      {modalUrl && (
+        <div className="iframe-modal-overlay" onClick={closeModal}>
+          <div className="iframe-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="iframe-modal-header">
+              <h3>Application Viewer</h3>
+              <button className="iframe-modal-close" onClick={closeModal}>✕</button>
+            </div>
+            <iframe 
+              src={modalUrl} 
+              title="Application Viewer"
+              className="iframe-modal-frame"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }

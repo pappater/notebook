@@ -39,11 +39,13 @@ function NoteEditor({ notes, setNotes, currentNote, setCurrentNote, darkMode }) 
   };
 
   const deleteNote = (id) => {
-    setNotes(notes.filter(note => note.id !== id));
-    if (currentNote && currentNote.id === id) {
-      setCurrentNote(null);
-      setNoteTitle('');
-      setNoteContent('');
+    if (window.confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
+      setNotes(notes.filter(note => note.id !== id));
+      if (currentNote && currentNote.id === id) {
+        setCurrentNote(null);
+        setNoteTitle('');
+        setNoteContent('');
+      }
     }
   };
 

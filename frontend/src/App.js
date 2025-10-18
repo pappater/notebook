@@ -4,9 +4,6 @@ import Clock from './components/Clock';
 import TodoList from './components/TodoList';
 import NoteEditor from './components/NoteEditor';
 import HamburgerMenu from './components/HamburgerMenu';
-import YearProgress from './components/YearProgress';
-import QuoteDisplay from './components/QuoteDisplay';
-import ArticleDisplay from './components/ArticleDisplay';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -44,25 +41,20 @@ function App() {
 
   return (
     <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <HamburgerMenu />
-      
       <div className="header">
         <h1>Notebook</h1>
-        <button className="theme-toggle" onClick={toggleDarkMode}>
-          {darkMode ? '☀️' : '🌙'}
-        </button>
+        <div className="header-actions">
+          <button className="theme-toggle" onClick={toggleDarkMode}>
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+          <HamburgerMenu darkMode={darkMode} />
+        </div>
       </div>
 
       <Clock />
       
       <div className="main-content">
-        <div className="left-panel">
-          <YearProgress />
-          <QuoteDisplay darkMode={darkMode} />
-          <ArticleDisplay darkMode={darkMode} />
-        </div>
-
-        <div className="right-panel">
+        <div className="center-panel">
           <TodoList todos={todos} setTodos={setTodos} darkMode={darkMode} />
           <NoteEditor 
             notes={notes} 

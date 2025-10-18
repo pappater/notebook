@@ -20,7 +20,9 @@ function TodoList({ todos, setTodos, darkMode }) {
   };
 
   const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      setTodos(todos.filter(todo => todo.id !== id));
+    }
   };
 
   const toggleComplete = (id) => {
