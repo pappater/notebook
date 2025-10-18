@@ -1,0 +1,27 @@
+.article-display {
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  padding: 20px;
+  min-height: 200px;
+}
+
+.article-display h3 {
+  font-size: 1.3rem;
+  font-weight: 300;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.article-title {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.article-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin: 0;
+}
