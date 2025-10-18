@@ -43,9 +43,8 @@ def get_quote():
         return jsonify({
             'quote': 'The only way to do great work is to love what you do.',
             'author': 'Steve Jobs',
-            'source': 'fallback',
-            'error': str(e)
-        })
+            'source': 'fallback'
+        }), 500
 
 @app.route('/api/article', methods=['GET'])
 def get_random_article():
@@ -68,9 +67,8 @@ def get_random_article():
         print(f"Error fetching article: {e}")
         return jsonify({
             'title': 'Welcome to Notebook',
-            'content': 'Your daily companion for notes, tasks, and inspiration.',
-            'error': str(e)
-        })
+            'content': 'Your daily companion for notes, tasks, and inspiration.'
+        }), 500
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
@@ -91,7 +89,7 @@ def get_data():
             return jsonify({'todos': [], 'notes': []})
     except Exception as e:
         print(f"Error fetching data: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Failed to fetch data'}), 500
 
 @app.route('/api/data', methods=['POST'])
 def save_data():
@@ -116,7 +114,9 @@ def save_data():
         return jsonify({'status': 'success', 'message': 'Data saved to gist'})
     except Exception as e:
         print(f"Error saving data: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Failed to save data'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Use debug mode only in development, not in production
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    app.run(debug=debug_mode, port=5000)
