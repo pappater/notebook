@@ -1,3 +1,39 @@
+/* Light mode hover: make add and edit buttons white on hover */
+.light-mode .add-btn:hover,
+.light-mode .edit-btn:hover,
+.light-mode .save-btn:hover {
+  background: #222;
+  color: #fff;
+}
+/* Dark mode overrides for TodoList buttons and input */
+.dark-mode .add-btn,
+.dark-mode .edit-btn,
+.dark-mode .delete-btn,
+.dark-mode .save-btn,
+.dark-mode .cancel-btn {
+  color: #fff;
+  border-color: #fff;
+}
+.dark-mode .add-btn:hover,
+.dark-mode .edit-btn:hover,
+.dark-mode .save-btn:hover {
+  background: #fff;
+  color: #222;
+}
+.dark-mode .delete-btn:hover,
+.dark-mode .cancel-btn:hover {
+  background: #ff4444;
+  border-color: #ff4444;
+  color: #fff;
+}
+.dark-mode .todo-input {
+  color: #fff;
+  border-color: #fff;
+}
+.dark-mode .todo-input::placeholder {
+  color: #fff;
+  opacity: 0.5;
+}
 .todo-list {
   border: 2px solid currentColor;
   border-radius: 10px;

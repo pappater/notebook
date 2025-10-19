@@ -1,3 +1,58 @@
+/* Light/Dark mode support for HamburgerMenu */
+.light-mode .hamburger-btn {
+  border: 2px solid #222;
+  color: #222;
+}
+.dark-mode .hamburger-btn {
+  border: 2px solid #fff;
+  color: #fff;
+}
+.light-mode .hamburger-icon span {
+  background: #222;
+}
+.dark-mode .hamburger-icon span {
+  background: #fff;
+}
+.light-mode .menu-content {
+  color: #222;
+}
+.dark-mode .menu-content {
+  color: #fff;
+}
+.light-mode .menu-link-btn {
+  color: #222;
+  border: 1px solid transparent;
+}
+.dark-mode .menu-link-btn {
+  color: #fff;
+  border: 1px solid transparent;
+}
+.light-mode .menu-link-btn:hover {
+  border: 1px solid #222;
+  border-radius: 5px;
+}
+.dark-mode .menu-link-btn:hover {
+  border: 1px solid #fff;
+  border-radius: 5px;
+}
+.light-mode .close-menu {
+  background: #222;
+  color: #fff;
+  border: 2px solid #222;
+}
+.dark-mode .close-menu {
+  background: #fff;
+  color: #222;
+  border: 2px solid #fff;
+}
+.light-mode .close-menu:hover {
+  background: #fff;
+  color: #222;
+}
+.dark-mode .close-menu:hover {
+  background: #222;
+  color: #fff;
+}
 .hamburger-btn {
   background: transparent;
   border: 2px solid currentColor;

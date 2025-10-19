@@ -1,3 +1,14 @@
+/* Light/Dark mode support for ArticleDisplay */
+.light-mode .article-display {
+  border: 2px solid #222;
+  background: #fff;
+  color: #222;
+}
+.dark-mode .article-display {
+  border: 2px solid #fff;
+  background: #222;
+  color: #fff;
+}
 .article-display {
   border: 2px solid currentColor;
   border-radius: 10px;

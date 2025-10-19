@@ -1,3 +1,32 @@
+/* Light mode hover: make new note and save buttons white on hover */
+.light-mode .new-note-btn:hover,
+.light-mode .save-note-btn:hover {
+  background: #222;
+  color: #fff;
+}
+/* Dark mode placeholder color for NoteEditor inputs */
+.dark-mode .note-title-input::placeholder,
+.dark-mode .note-content-input::placeholder {
+  color: #fff;
+  opacity: 0.5;
+}
+/* Dark mode overrides for NoteEditor buttons */
+.dark-mode .new-note-btn,
+.dark-mode .delete-note-btn,
+.dark-mode .save-note-btn {
+  color: #fff;
+  border-color: #fff;
+}
+.dark-mode .new-note-btn:hover,
+.dark-mode .save-note-btn:hover {
+  background: #fff;
+  color: #222;
+}
+.dark-mode .delete-note-btn:hover {
+  background: #ff4444;
+  border-color: #ff4444;
+  color: #fff;
+}
 .note-editor {
   border: 2px solid currentColor;
   border-radius: 10px;
