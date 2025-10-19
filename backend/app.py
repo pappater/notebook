@@ -1,18 +1,116 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect, session, url_for
 from flask_cors import CORS
+from urllib.parse import urlencode
 import requests
 from bs4 import BeautifulSoup
 import json
 import os
+import secrets
 from datetime import datetime
-from github import Github
+from github import Github, InputFileContent
+
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(16))
 
-# Configuration
-GIST_ID = os.environ.get('GIST_ID', '')
-GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '')
+
+# GitHub OAuth Config
+GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID', '')
+GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET', '')
+GITHUB_OAUTH_CALLBACK = os.environ.get('GITHUB_OAUTH_CALLBACK', 'http://localhost:5000/auth/github/callback')
+GITHUB_OAUTH_AUTHORIZE_URL = 'https://github.com/login/oauth/authorize'
+GITHUB_OAUTH_TOKEN_URL = 'https://github.com/login/oauth/access_token'
+GITHUB_API_USER_URL = 'https://api.github.com/user'
+GITHUB_API_GISTS_URL = 'https://api.github.com/gists'
+def get_user_token():
+    return session.get('github_token')
+
+def get_user_gist_id():
+    gist_id = session.get('gist_id')
+    token = get_user_token()
+    if not token:
+        return None
+    g = Github(token)
+    user = g.get_user()
+    # Always search for existing gist if not present in session
+    for gist in user.get_gists():
+        if 'notebook-data.json' in gist.files:
+            session['gist_id'] = gist.id
+            return gist.id
+    # If not found, clear session gist_id
+    session.pop('gist_id', None)
+    return None
+
+def set_user_gist_id(gist_id):
+    session['gist_id'] = gist_id
+
+def clear_user_session():
+    session.pop('github_token', None)
+    session.pop('github_user', None)
+    session.pop('gist_id', None)
+
+# --- OAuth Endpoints ---
+@app.route('/login/github')
+def login_github():
+    state = secrets.token_urlsafe(16)
+    session['oauth_state'] = state
+    params = {
+        'client_id': GITHUB_CLIENT_ID,
+        'redirect_uri': GITHUB_OAUTH_CALLBACK,
+        'scope': 'gist',
+        'state': state
+    }
+    url = f"{GITHUB_OAUTH_AUTHORIZE_URL}?{urlencode(params)}"
+    return redirect(url)
+
+@app.route('/auth/github/callback')
+def github_callback():
+    code = request.args.get('code')
+    state = request.args.get('state')
+    if not code or not state or state != session.get('oauth_state'):
+        return 'Invalid state or code', 400
+    # Exchange code for access token
+    token_resp = requests.post(
+        GITHUB_OAUTH_TOKEN_URL,
+        headers={'Accept': 'application/json'},
+        data={
+            'client_id': GITHUB_CLIENT_ID,
+            'client_secret': GITHUB_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': GITHUB_OAUTH_CALLBACK,
+            'state': state
+        }
+    )
+    token_json = token_resp.json()
+    access_token = token_json.get('access_token')
+    if not access_token:
+        return 'Failed to get access token', 400
+    # Get user info
+    user_resp = requests.get(GITHUB_API_USER_URL, headers={
+        'Authorization': f'token {access_token}',
+        'Accept': 'application/json'
+    })
+    user_json = user_resp.json()
+    session['github_token'] = access_token
+    session['github_user'] = user_json
+    # Redirect to frontend (adjust as needed)
+    return redirect('http://localhost:3000/')
+
+@app.route('/api/status')
+def api_status():
+    token = get_user_token()
+    user = session.get('github_user')
+    if token and user:
+        return jsonify({'logged_in': True, 'user': user, 'token': token})
+    else:
+        return jsonify({'logged_in': False})
+
+@app.route('/logout')
+def logout():
+    # Do NOT delete the gist, just clear session
+    clear_user_session()
+    return jsonify({'status': 'logged_out'})
 
 @app.route('/api/health', methods=['GET'])
 def health():
@@ -70,51 +168,7 @@ def get_random_article():
             'content': 'Your daily companion for notes, tasks, and inspiration.'
         }), 500
 
-@app.route('/api/data', methods=['GET'])
-def get_data():
-    """Fetch data from gist"""
-    if not GITHUB_TOKEN or not GIST_ID:
-        return jsonify({'error': 'Gist not configured'}), 400
-    
-    try:
-        g = Github(GITHUB_TOKEN)
-        gist = g.get_gist(GIST_ID)
-        
-        # Get notebook data file
-        notebook_file = gist.files.get('notebook-data.json')
-        if notebook_file:
-            data = json.loads(notebook_file.content)
-            return jsonify(data)
-        else:
-            return jsonify({'todos': [], 'notes': []})
-    except Exception as e:
-        print(f"Error fetching data: {e}")
-        return jsonify({'error': 'Failed to fetch data'}), 500
 
-@app.route('/api/data', methods=['POST'])
-def save_data():
-    """Save data to gist"""
-    if not GITHUB_TOKEN or not GIST_ID:
-        return jsonify({'error': 'Gist not configured'}), 400
-    
-    try:
-        data = request.json
-        g = Github(GITHUB_TOKEN)
-        gist = g.get_gist(GIST_ID)
-        
-        # Update the gist
-        gist.edit(
-            files={
-                'notebook-data.json': {
-                    'content': json.dumps(data, indent=2)
-                }
-            }
-        )
-        
-        return jsonify({'status': 'success', 'message': 'Data saved to gist'})
-    except Exception as e:
-        print(f"Error saving data: {e}")
-        return jsonify({'error': 'Failed to save data'}), 500
 
 if __name__ == '__main__':
     # Use debug mode only in development, not in production
