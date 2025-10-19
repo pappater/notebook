@@ -397,9 +397,16 @@ function App() {
   }, [githubToken, userLogin, gistId]);
 
   return (
-    <div className={`app ${darkMode ? "dark-mode" : "light-mode"}`}> 
+    <div className={`app ${darkMode ? "dark-mode" : "light-mode"}`}>
       <div className="header">
-        <div style={{ position: 'fixed', top: '16px', right: '32px', zIndex: 1000 }}>
+        <div
+          style={{
+            position: "fixed",
+            top: "16px",
+            right: "32px",
+            zIndex: 1000,
+          }}
+        >
           <Clock />
         </div>
         <div className="header-actions">
@@ -434,12 +441,23 @@ function App() {
           </div>
         )}
       </div>
-      <footer style={{ width: '100%', textAlign: 'right', padding: '12px 24px 8px 0' }}>
+      <footer
+        style={{
+          width: "100%",
+          textAlign: "right",
+          padding: "12px 24px 8px 0",
+        }}
+      >
         <div>
-          <span style={{ fontWeight: 'bold', fontSize: '2em' }}>Notebook</span>
+          <span style={{ fontWeight: "bold", fontSize: "2em" }}>Notebook</span>
         </div>
-        <div style={{ fontSize: '1em', color: '#888', marginTop: '2px' }}>
-          {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        <div style={{ fontSize: "1em", color: "#888", marginTop: "2px" }}>
+          {new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
         </div>
       </footer>
     </div>
