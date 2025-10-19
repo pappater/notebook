@@ -18,6 +18,8 @@ function App() {
   const [gistId, setGistId] = useState(null);
   const [error, setError] = useState(null);
   const [userLogin, setUserLogin] = useState(null);
+  // Add a flag to track when gist is loaded
+  const [gistLoaded, setGistLoaded] = useState(false);
 
   // Always keep userLogin in sync with backend session
   useEffect(() => {
@@ -94,6 +96,7 @@ function App() {
                           setNotes(parsed.notes || []);
                           setCurrentNote(parsed.currentNote || null);
                           setLoading(false);
+                          setGistLoaded(true);
                         }
                       } catch (e) {
                         setError('Failed to parse gist data.');
@@ -112,6 +115,7 @@ function App() {
                       setNotes(parsed.notes || []);
                       setCurrentNote(parsed.currentNote || null);
                       setLoading(false);
+                      setGistLoaded(true);
                     }
                   } catch (e) {
                     setError('Failed to parse gist data.');
@@ -129,6 +133,7 @@ function App() {
               setLoading(false);
             });
         } else {
+          // Only create a new gist if no owned gist exists
           fetch('https://api.github.com/gists', {
             method: 'POST',
             headers: {
@@ -140,7 +145,7 @@ function App() {
               public: false,
               files: {
                 'notebook-data.json': {
-                  content: JSON.stringify({ todos: [], notes: [] }, null, 2)
+                  content: JSON.stringify({ todos: [], notes: [], currentNote: null }, null, 2)
                 }
               },
               description: 'Notebook App Data'
@@ -156,6 +161,7 @@ function App() {
               setNotes([]);
               setCurrentNote(null);
               setLoading(false);
+              setGistLoaded(true);
             })
             .catch(err => {
               setError(err.message);
@@ -177,7 +183,18 @@ function App() {
   useEffect(() => {
     // Save data to gist when todos or notes change
     console.log('Save-to-gist useEffect triggered:', { githubToken, gistId, todos, notes, currentNote });
-    if (githubToken && gistId) {
+    if (githubToken && gistId && gistLoaded) {
+      // Always send a valid content string for notebook-data.json
+      const safeTodos = Array.isArray(todos) ? todos : [];
+      const safeNotes = Array.isArray(notes) ? notes : [];
+      const patchBody = {
+        files: {
+          'notebook-data.json': {
+            content: JSON.stringify({ todos: safeTodos, notes: safeNotes, currentNote }, null, 2)
+          }
+        }
+      };
+      console.log('PATCHING GIST', { token: githubToken, gistId, patchBody });
       fetch(`https://api.github.com/gists/${gistId}`, {
         method: 'PATCH',
         headers: {
@@ -185,28 +202,27 @@ function App() {
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          files: {
-            'notebook-data.json': {
-              content: JSON.stringify({ todos, notes, currentNote }, null, 2)
-            }
-          }
-        })
+        body: JSON.stringify(patchBody)
       })
         .then(res => {
           if (!res.ok) {
             return res.json().then(errData => {
-              console.error('PATCH gist error:', errData);
-              throw new Error('Failed to update gist: ' + (errData.message || res.status));
+              if (res.status === 409) {
+                setError('You do not have permission to update this gist. Please contact support or log in with the correct account.');
+                throw new Error('Failed to update gist: ' + (errData.message || res.status));
+              } else {
+                setError('Failed to update gist: ' + (errData.message || res.status));
+                throw new Error('Failed to update gist: ' + (errData.message || res.status));
+              }
             });
           }
         })
         .catch(err => {
-          setError(err.message);
+          // Error already handled above
           console.error('PATCH gist exception:', err);
         });
     }
-  }, [todos, notes, currentNote, githubToken, gistId]);
+  }, [todos, notes, currentNote, githubToken, gistId, gistLoaded]);
 
   // New useEffect to trigger loadOrCreateGist when both githubToken and userLogin are set
   useEffect(() => {
@@ -214,6 +230,137 @@ function App() {
       loadOrCreateGist(githubToken, userLogin);
     }
   }, [githubToken, userLogin]);
+
+  // 1. Only fetch gists and create a new one after both githubToken and userLogin are set, and only if gistId is not set
+  useEffect(() => {
+    if (githubToken && userLogin && !gistId) {
+      let isMounted = true;
+      setLoading(true);
+      setError(null);
+      fetch('https://api.github.com/gists', {
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      })
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch gists');
+          return res.json();
+        })
+        .then(gists => {
+          let foundGistOwnedByUser = null;
+          for (const gist of gists) {
+            if (gist.files && gist.files['notebook-data.json'] && gist.owner && gist.owner.login && userLogin && gist.owner.login === userLogin) {
+              foundGistOwnedByUser = gist;
+              break;
+            }
+          }
+          if (foundGistOwnedByUser) {
+            setGistId(foundGistOwnedByUser.id);
+            fetch(`https://api.github.com/gists/${foundGistOwnedByUser.id}`, {
+              headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+              }
+            })
+              .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch gist data');
+                return res.json();
+              })
+              .then(gistData => {
+                const file = gistData.files['notebook-data.json'];
+                if (file) {
+                  if (file.truncated) {
+                    fetch(file.raw_url)
+                      .then(res => res.text())
+                      .then(content => {
+                        try {
+                          const parsed = JSON.parse(content);
+                          if (isMounted) {
+                            setTodos(parsed.todos || []);
+                            setNotes(parsed.notes || []);
+                            setCurrentNote(parsed.currentNote || null);
+                            setLoading(false);
+                            setGistLoaded(true);
+                          }
+                        } catch (e) {
+                          setError('Failed to parse gist data.');
+                          setLoading(false);
+                        }
+                      })
+                      .catch(err => {
+                        setError('Failed to fetch truncated gist file.');
+                        setLoading(false);
+                      });
+                  } else if (file.content) {
+                    try {
+                      const parsed = JSON.parse(file.content);
+                      if (isMounted) {
+                        setTodos(parsed.todos || []);
+                        setNotes(parsed.notes || []);
+                        setCurrentNote(parsed.currentNote || null);
+                        setLoading(false);
+                        setGistLoaded(true);
+                      }
+                    } catch (e) {
+                      setError('Failed to parse gist data.');
+                      setLoading(false);
+                    }
+                  } else {
+                    setLoading(false);
+                  }
+                } else {
+                  setLoading(false);
+                }
+              })
+              .catch(err => {
+                setError(err.message);
+                setLoading(false);
+              });
+          } else {
+            // Only create a new gist if no owned gist exists
+            fetch('https://api.github.com/gists', {
+              method: 'POST',
+              headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                public: false,
+                files: {
+                  'notebook-data.json': {
+                    content: JSON.stringify({ todos: [], notes: [], currentNote: null }, null, 2)
+                  }
+                },
+                description: 'Notebook App Data'
+              })
+            })
+              .then(res => {
+                if (!res.ok) throw new Error('Failed to create gist');
+                return res.json();
+              })
+              .then(newGist => {
+                setGistId(newGist.id);
+                setTodos([]);
+                setNotes([]);
+                setCurrentNote(null);
+                setLoading(false);
+                setGistLoaded(true);
+              })
+              .catch(err => {
+                setError(err.message);
+                setLoading(false);
+              });
+          }
+        })
+        .catch(err => {
+          setError(err.message);
+          setLoading(false);
+        });
+      return () => { isMounted = false; };
+    }
+  }, [githubToken, userLogin, gistId]);
 
   return (
     <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
