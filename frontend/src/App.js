@@ -17,10 +17,36 @@ function App() {
   const [githubToken, setGithubToken] = useState(null);
   const [gistId, setGistId] = useState(null);
   const [error, setError] = useState(null);
+  const [userLogin, setUserLogin] = useState(null);
 
-  // Gist-based data loading/saving using GitHub API directly
-  // Move gist logic to a function so it can be called after token is set
-  const loadOrCreateGist = (token) => {
+  // Always keep userLogin in sync with backend session
+  useEffect(() => {
+    fetch('http://localhost:5000/api/status', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user && data.user.login) {
+          setUserLogin(data.user.login);
+        }
+      });
+  }, []);
+
+  const handleToken = (token) => {
+    setGithubToken(token);
+    // Only call gist logic after userLogin is set
+    if (userLogin) {
+      loadOrCreateGist(token, userLogin);
+    } else {
+      // Wait for userLogin to be set, then call gist logic
+      const interval = setInterval(() => {
+        if (userLogin) {
+          loadOrCreateGist(token, userLogin);
+          clearInterval(interval);
+        }
+      }, 100);
+    }
+  };
+
+  const loadOrCreateGist = (token, login) => {
     let isMounted = true;
     setLoading(true);
     setError(null);
@@ -35,16 +61,11 @@ function App() {
         return res.json();
       })
       .then(gists => {
-        let foundGist = null;
         let foundGistOwnedByUser = null;
         for (const gist of gists) {
-          if (gist.files && gist.files['notebook-data.json']) {
-            foundGist = gist;
-            // Check if gist owner matches current user
-            if (gist.owner && gist.owner.login && gist.owner.login === gists[0].owner.login) {
-              foundGistOwnedByUser = gist;
-              break;
-            }
+          if (gist.files && gist.files['notebook-data.json'] && gist.owner && gist.owner.login && login && gist.owner.login === login) {
+            foundGistOwnedByUser = gist;
+            break;
           }
         }
         if (foundGistOwnedByUser) {
@@ -146,11 +167,6 @@ function App() {
     return () => { isMounted = false; };
   };
 
-  const handleToken = (token) => {
-    setGithubToken(token);
-    loadOrCreateGist(token);
-  };
-
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -188,6 +204,13 @@ function App() {
         });
     }
   }, [todos, notes, githubToken, gistId]);
+
+  // New useEffect to trigger loadOrCreateGist when both githubToken and userLogin are set
+  useEffect(() => {
+    if (githubToken && userLogin) {
+      loadOrCreateGist(githubToken, userLogin);
+    }
+  }, [githubToken, userLogin]);
 
   return (
     <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
