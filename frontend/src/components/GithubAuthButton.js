@@ -38,7 +38,7 @@ function GithubAuthButton({ onLogin, onLogout, onToken }) {
       .catch((err) => {
         console.error("GithubAuthButton /api/status fetch error:", err);
       });
-  }, []);
+  }, [onLogin, onLogout, onToken]);
 
   const handleLogin = () => {
     window.location.href = `${BACKEND_URL}/login/github`;
