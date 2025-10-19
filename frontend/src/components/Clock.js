@@ -30,14 +30,6 @@ function Clock() {
         <span className="separator">:</span>
         <span className="time-unit">{seconds}</span>
       </div>
-      <div className="date-display">
-        {time.toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        })}
-      </div>
     </div>
   );
 }

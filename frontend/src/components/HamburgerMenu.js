@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
+import GithubAuthButton from './GithubAuthButton';
 import './HamburgerMenu.css';
 
-function HamburgerMenu({ darkMode }) {
+function HamburgerMenu({ darkMode, onToken }) {
   const [isOpen, setIsOpen] = useState(false);
   const [modalUrl, setModalUrl] = useState(null);
 
@@ -46,6 +48,9 @@ function HamburgerMenu({ darkMode }) {
               </li>
             ))}
           </ul>
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <GithubAuthButton onToken={onToken} />
+          </div>
           <button className="close-menu" onClick={toggleMenu}>Close</button>
         </div>
       </div>
@@ -55,7 +60,7 @@ function HamburgerMenu({ darkMode }) {
           <div className="iframe-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="iframe-modal-header">
               <h3>Application Viewer</h3>
-              <button className="iframe-modal-close" onClick={closeModal}>✕</button>
+              <button className="iframe-modal-close" onClick={closeModal}>715</button>
             </div>
             <iframe 
               src={modalUrl} 

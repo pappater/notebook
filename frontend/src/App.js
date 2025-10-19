@@ -397,18 +397,18 @@ function App() {
   }, [githubToken, userLogin, gistId]);
 
   return (
-    <div className={`app ${darkMode ? "dark-mode" : "light-mode"}`}>
+    <div className={`app ${darkMode ? "dark-mode" : "light-mode"}`}> 
       <div className="header">
-        <h1>Notebook</h1>
+        <div style={{ position: 'fixed', top: '16px', right: '32px', zIndex: 1000 }}>
+          <Clock />
+        </div>
         <div className="header-actions">
-          <GithubAuthButton onToken={handleToken} />
           <button className="theme-toggle" onClick={toggleDarkMode}>
             {darkMode ? "☀️" : "🌙"}
           </button>
-          <HamburgerMenu darkMode={darkMode} />
+          <HamburgerMenu darkMode={darkMode} onToken={handleToken} />
         </div>
       </div>
-      <Clock />
       <div className="main-content">
         {error && (
           <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
@@ -434,6 +434,14 @@ function App() {
           </div>
         )}
       </div>
+      <footer style={{ width: '100%', textAlign: 'right', padding: '12px 24px 8px 0' }}>
+        <div>
+          <span style={{ fontWeight: 'bold', fontSize: '2em' }}>Notebook</span>
+        </div>
+        <div style={{ fontSize: '1em', color: '#888', marginTop: '2px' }}>
+          {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        </div>
+      </footer>
     </div>
   );
 }
