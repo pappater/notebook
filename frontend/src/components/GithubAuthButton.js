@@ -1,36 +1,42 @@
-import React, { useEffect, useState } from 'react';
-console.log('GithubAuthButton component loaded');
+import React, { useEffect, useState } from "react";
+console.log("GithubAuthButton component loaded");
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = "https://notebook-8eyk.onrender.com";
 
 function GithubAuthButton({ onLogin, onLogout, onToken }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    console.log('GithubAuthButton useEffect running');
+    console.log("GithubAuthButton useEffect running");
     fetch(`${BACKEND_URL}/api/status`, {
-      credentials: 'include',
+      credentials: "include",
     })
-      .then(res => {
-        console.log('GithubAuthButton /api/status response status:', res.status);
+      .then((res) => {
+        console.log(
+          "GithubAuthButton /api/status response status:",
+          res.status
+        );
         return res.json();
       })
-      .then(data => {
-        console.log('GithubAuthButton /api/status response data:', data);
+      .then((data) => {
+        console.log("GithubAuthButton /api/status response data:", data);
         setLoggedIn(data.logged_in);
         setUser(data.user || null);
         if (data.logged_in) {
           if (onLogin) onLogin(data.user);
           if (onToken && data.token) {
-            console.log('GithubAuthButton: passing token to onToken:', data.token);
+            console.log(
+              "GithubAuthButton: passing token to onToken:",
+              data.token
+            );
             onToken(data.token);
           }
         }
         if (!data.logged_in && onLogout) onLogout();
       })
-      .catch(err => {
-        console.error('GithubAuthButton /api/status fetch error:', err);
+      .catch((err) => {
+        console.error("GithubAuthButton /api/status fetch error:", err);
       });
   }, []);
 
@@ -40,7 +46,7 @@ function GithubAuthButton({ onLogin, onLogout, onToken }) {
 
   const handleLogout = () => {
     fetch(`${BACKEND_URL}/logout`, {
-      credentials: 'include',
+      credentials: "include",
     })
       .then(() => {
         setLoggedIn(false);
@@ -57,13 +63,13 @@ function GithubAuthButton({ onLogin, onLogout, onToken }) {
 
   if (loggedIn && user) {
     return (
-      <button onClick={handleLogout} style={{margin: '10px'}}>
+      <button onClick={handleLogout} style={{ margin: "10px" }}>
         Logout with GitHub ({user.login})
       </button>
     );
   }
   return (
-    <button onClick={handleLogin} style={{margin: '10px'}}>
+    <button onClick={handleLogin} style={{ margin: "10px" }}>
       Login with GitHub
     </button>
   );

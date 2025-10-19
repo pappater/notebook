@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import Clock from './components/Clock';
-import HamburgerMenu from './components/HamburgerMenu';
-import TodoList from './components/TodoList';
-import NoteEditor from './components/NoteEditor';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import Clock from "./components/Clock";
+import HamburgerMenu from "./components/HamburgerMenu";
+import TodoList from "./components/TodoList";
+import NoteEditor from "./components/NoteEditor";
 
-import GithubAuthButton from './components/GithubAuthButton';
+import GithubAuthButton from "./components/GithubAuthButton";
 
 function App() {
-  console.log('App component rendered');
+  console.log("App component rendered");
   const [darkMode, setDarkMode] = useState(false);
   const [todos, setTodos] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -23,9 +23,11 @@ function App() {
 
   // Always keep userLogin in sync with backend session
   useEffect(() => {
-    fetch('http://localhost:5000/api/status', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => {
+    fetch("https://notebook-8eyk.onrender.com/api/status", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
         if (data.user && data.user.login) {
           setUserLogin(data.user.login);
         }
@@ -52,20 +54,27 @@ function App() {
     let isMounted = true;
     setLoading(true);
     setError(null);
-    fetch('https://api.github.com/gists', {
+    fetch("https://api.github.com/gists", {
       headers: {
-        'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
+        Authorization: `token ${token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
     })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch gists');
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch gists");
         return res.json();
       })
-      .then(gists => {
+      .then((gists) => {
         let foundGistOwnedByUser = null;
         for (const gist of gists) {
-          if (gist.files && gist.files['notebook-data.json'] && gist.owner && gist.owner.login && login && gist.owner.login === login) {
+          if (
+            gist.files &&
+            gist.files["notebook-data.json"] &&
+            gist.owner &&
+            gist.owner.login &&
+            login &&
+            gist.owner.login === login
+          ) {
             foundGistOwnedByUser = gist;
             break;
           }
@@ -74,21 +83,21 @@ function App() {
           setGistId(foundGistOwnedByUser.id);
           fetch(`https://api.github.com/gists/${foundGistOwnedByUser.id}`, {
             headers: {
-              'Authorization': `token ${token}`,
-              'Accept': 'application/vnd.github.v3+json'
-            }
+              Authorization: `token ${token}`,
+              Accept: "application/vnd.github.v3+json",
+            },
           })
-            .then(res => {
-              if (!res.ok) throw new Error('Failed to fetch gist data');
+            .then((res) => {
+              if (!res.ok) throw new Error("Failed to fetch gist data");
               return res.json();
             })
-            .then(gistData => {
-              const file = gistData.files['notebook-data.json'];
+            .then((gistData) => {
+              const file = gistData.files["notebook-data.json"];
               if (file) {
                 if (file.truncated) {
                   fetch(file.raw_url)
-                    .then(res => res.text())
-                    .then(content => {
+                    .then((res) => res.text())
+                    .then((content) => {
                       try {
                         const parsed = JSON.parse(content);
                         if (isMounted) {
@@ -99,12 +108,12 @@ function App() {
                           setGistLoaded(true);
                         }
                       } catch (e) {
-                        setError('Failed to parse gist data.');
+                        setError("Failed to parse gist data.");
                         setLoading(false);
                       }
                     })
-                    .catch(err => {
-                      setError('Failed to fetch truncated gist file.');
+                    .catch((err) => {
+                      setError("Failed to fetch truncated gist file.");
                       setLoading(false);
                     });
                 } else if (file.content) {
@@ -118,7 +127,7 @@ function App() {
                       setGistLoaded(true);
                     }
                   } catch (e) {
-                    setError('Failed to parse gist data.');
+                    setError("Failed to parse gist data.");
                     setLoading(false);
                   }
                 } else {
@@ -128,34 +137,38 @@ function App() {
                 setLoading(false);
               }
             })
-            .catch(err => {
+            .catch((err) => {
               setError(err.message);
               setLoading(false);
             });
         } else {
           // Only create a new gist if no owned gist exists
-          fetch('https://api.github.com/gists', {
-            method: 'POST',
+          fetch("https://api.github.com/gists", {
+            method: "POST",
             headers: {
-              'Authorization': `token ${token}`,
-              'Accept': 'application/vnd.github.v3+json',
-              'Content-Type': 'application/json'
+              Authorization: `token ${token}`,
+              Accept: "application/vnd.github.v3+json",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               public: false,
               files: {
-                'notebook-data.json': {
-                  content: JSON.stringify({ todos: [], notes: [], currentNote: null }, null, 2)
-                }
+                "notebook-data.json": {
+                  content: JSON.stringify(
+                    { todos: [], notes: [], currentNote: null },
+                    null,
+                    2
+                  ),
+                },
               },
-              description: 'Notebook App Data'
-            })
+              description: "Notebook App Data",
+            }),
           })
-            .then(res => {
-              if (!res.ok) throw new Error('Failed to create gist');
+            .then((res) => {
+              if (!res.ok) throw new Error("Failed to create gist");
               return res.json();
             })
-            .then(newGist => {
+            .then((newGist) => {
               setGistId(newGist.id);
               setTodos([]);
               setNotes([]);
@@ -163,17 +176,19 @@ function App() {
               setLoading(false);
               setGistLoaded(true);
             })
-            .catch(err => {
+            .catch((err) => {
               setError(err.message);
               setLoading(false);
             });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   };
 
   const toggleDarkMode = () => {
@@ -182,44 +197,62 @@ function App() {
 
   useEffect(() => {
     // Save data to gist when todos or notes change
-    console.log('Save-to-gist useEffect triggered:', { githubToken, gistId, todos, notes, currentNote });
+    console.log("Save-to-gist useEffect triggered:", {
+      githubToken,
+      gistId,
+      todos,
+      notes,
+      currentNote,
+    });
     if (githubToken && gistId && gistLoaded) {
       // Always send a valid content string for notebook-data.json
       const safeTodos = Array.isArray(todos) ? todos : [];
       const safeNotes = Array.isArray(notes) ? notes : [];
       const patchBody = {
         files: {
-          'notebook-data.json': {
-            content: JSON.stringify({ todos: safeTodos, notes: safeNotes, currentNote }, null, 2)
-          }
-        }
-      };
-      console.log('PATCHING GIST', { token: githubToken, gistId, patchBody });
-      fetch(`https://api.github.com/gists/${gistId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `token ${githubToken}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
+          "notebook-data.json": {
+            content: JSON.stringify(
+              { todos: safeTodos, notes: safeNotes, currentNote },
+              null,
+              2
+            ),
+          },
         },
-        body: JSON.stringify(patchBody)
+      };
+      console.log("PATCHING GIST", { token: githubToken, gistId, patchBody });
+      fetch(`https://api.github.com/gists/${gistId}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `token ${githubToken}`,
+          Accept: "application/vnd.github.v3+json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(patchBody),
       })
-        .then(res => {
+        .then((res) => {
           if (!res.ok) {
-            return res.json().then(errData => {
+            return res.json().then((errData) => {
               if (res.status === 409) {
-                setError('You do not have permission to update this gist. Please contact support or log in with the correct account.');
-                throw new Error('Failed to update gist: ' + (errData.message || res.status));
+                setError(
+                  "You do not have permission to update this gist. Please contact support or log in with the correct account."
+                );
+                throw new Error(
+                  "Failed to update gist: " + (errData.message || res.status)
+                );
               } else {
-                setError('Failed to update gist: ' + (errData.message || res.status));
-                throw new Error('Failed to update gist: ' + (errData.message || res.status));
+                setError(
+                  "Failed to update gist: " + (errData.message || res.status)
+                );
+                throw new Error(
+                  "Failed to update gist: " + (errData.message || res.status)
+                );
               }
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           // Error already handled above
-          console.error('PATCH gist exception:', err);
+          console.error("PATCH gist exception:", err);
         });
     }
   }, [todos, notes, currentNote, githubToken, gistId, gistLoaded]);
@@ -237,20 +270,27 @@ function App() {
       let isMounted = true;
       setLoading(true);
       setError(null);
-      fetch('https://api.github.com/gists', {
+      fetch("https://api.github.com/gists", {
         headers: {
-          'Authorization': `token ${githubToken}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
+          Authorization: `token ${githubToken}`,
+          Accept: "application/vnd.github.v3+json",
+        },
       })
-        .then(res => {
-          if (!res.ok) throw new Error('Failed to fetch gists');
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch gists");
           return res.json();
         })
-        .then(gists => {
+        .then((gists) => {
           let foundGistOwnedByUser = null;
           for (const gist of gists) {
-            if (gist.files && gist.files['notebook-data.json'] && gist.owner && gist.owner.login && userLogin && gist.owner.login === userLogin) {
+            if (
+              gist.files &&
+              gist.files["notebook-data.json"] &&
+              gist.owner &&
+              gist.owner.login &&
+              userLogin &&
+              gist.owner.login === userLogin
+            ) {
               foundGistOwnedByUser = gist;
               break;
             }
@@ -259,21 +299,21 @@ function App() {
             setGistId(foundGistOwnedByUser.id);
             fetch(`https://api.github.com/gists/${foundGistOwnedByUser.id}`, {
               headers: {
-                'Authorization': `token ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json'
-              }
+                Authorization: `token ${githubToken}`,
+                Accept: "application/vnd.github.v3+json",
+              },
             })
-              .then(res => {
-                if (!res.ok) throw new Error('Failed to fetch gist data');
+              .then((res) => {
+                if (!res.ok) throw new Error("Failed to fetch gist data");
                 return res.json();
               })
-              .then(gistData => {
-                const file = gistData.files['notebook-data.json'];
+              .then((gistData) => {
+                const file = gistData.files["notebook-data.json"];
                 if (file) {
                   if (file.truncated) {
                     fetch(file.raw_url)
-                      .then(res => res.text())
-                      .then(content => {
+                      .then((res) => res.text())
+                      .then((content) => {
                         try {
                           const parsed = JSON.parse(content);
                           if (isMounted) {
@@ -284,12 +324,12 @@ function App() {
                             setGistLoaded(true);
                           }
                         } catch (e) {
-                          setError('Failed to parse gist data.');
+                          setError("Failed to parse gist data.");
                           setLoading(false);
                         }
                       })
-                      .catch(err => {
-                        setError('Failed to fetch truncated gist file.');
+                      .catch((err) => {
+                        setError("Failed to fetch truncated gist file.");
                         setLoading(false);
                       });
                   } else if (file.content) {
@@ -303,7 +343,7 @@ function App() {
                         setGistLoaded(true);
                       }
                     } catch (e) {
-                      setError('Failed to parse gist data.');
+                      setError("Failed to parse gist data.");
                       setLoading(false);
                     }
                   } else {
@@ -313,34 +353,38 @@ function App() {
                   setLoading(false);
                 }
               })
-              .catch(err => {
+              .catch((err) => {
                 setError(err.message);
                 setLoading(false);
               });
           } else {
             // Only create a new gist if no owned gist exists
-            fetch('https://api.github.com/gists', {
-              method: 'POST',
+            fetch("https://api.github.com/gists", {
+              method: "POST",
               headers: {
-                'Authorization': `token ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
+                Authorization: `token ${githubToken}`,
+                Accept: "application/vnd.github.v3+json",
+                "Content-Type": "application/json",
               },
               body: JSON.stringify({
                 public: false,
                 files: {
-                  'notebook-data.json': {
-                    content: JSON.stringify({ todos: [], notes: [], currentNote: null }, null, 2)
-                  }
+                  "notebook-data.json": {
+                    content: JSON.stringify(
+                      { todos: [], notes: [], currentNote: null },
+                      null,
+                      2
+                    ),
+                  },
                 },
-                description: 'Notebook App Data'
-              })
+                description: "Notebook App Data",
+              }),
             })
-              .then(res => {
-                if (!res.ok) throw new Error('Failed to create gist');
+              .then((res) => {
+                if (!res.ok) throw new Error("Failed to create gist");
                 return res.json();
               })
-              .then(newGist => {
+              .then((newGist) => {
                 setGistId(newGist.id);
                 setTodos([]);
                 setNotes([]);
@@ -348,28 +392,30 @@ function App() {
                 setLoading(false);
                 setGistLoaded(true);
               })
-              .catch(err => {
+              .catch((err) => {
                 setError(err.message);
                 setLoading(false);
               });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           setError(err.message);
           setLoading(false);
         });
-      return () => { isMounted = false; };
+      return () => {
+        isMounted = false;
+      };
     }
   }, [githubToken, userLogin, gistId]);
 
   return (
-    <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+    <div className={`app ${darkMode ? "dark-mode" : "light-mode"}`}>
       <div className="header">
         <h1>Notebook</h1>
         <div className="header-actions">
           <GithubAuthButton onToken={handleToken} />
           <button className="theme-toggle" onClick={toggleDarkMode}>
-            {darkMode ? '☀️' : '🌙'}
+            {darkMode ? "☀️" : "🌙"}
           </button>
           <HamburgerMenu darkMode={darkMode} />
         </div>
@@ -377,20 +423,22 @@ function App() {
       <Clock />
       <div className="main-content">
         {error && (
-          <div style={{ color: 'red', textAlign: 'center', marginTop: '20px' }}>
+          <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
             <strong>Error:</strong> {error}
           </div>
         )}
         {loading ? (
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <div className="loader" style={{ fontSize: '1.5em' }}>Loading data...</div>
+          <div style={{ textAlign: "center", marginTop: "40px" }}>
+            <div className="loader" style={{ fontSize: "1.5em" }}>
+              Loading data...
+            </div>
           </div>
         ) : (
           <div className="center-panel">
             <TodoList todos={todos} setTodos={setTodos} darkMode={darkMode} />
-            <NoteEditor 
-              notes={notes} 
-              setNotes={setNotes} 
+            <NoteEditor
+              notes={notes}
+              setNotes={setNotes}
               currentNote={currentNote}
               setCurrentNote={setCurrentNote}
               darkMode={darkMode}
@@ -400,6 +448,5 @@ function App() {
       </div>
     </div>
   );
-
 }
 export default App;
