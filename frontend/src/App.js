@@ -36,18 +36,6 @@ function App() {
 
   const handleToken = (token) => {
     setGithubToken(token);
-    // Only call gist logic after userLogin is set
-    if (userLogin) {
-      loadOrCreateGist(token, userLogin);
-    } else {
-      // Wait for userLogin to be set, then call gist logic
-      const interval = setInterval(() => {
-        if (userLogin) {
-          loadOrCreateGist(token, userLogin);
-          clearInterval(interval);
-        }
-      }, 100);
-    }
   };
 
   const loadOrCreateGist = (token, login) => {
