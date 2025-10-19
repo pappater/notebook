@@ -53,11 +53,11 @@ function GithubAuthButton({ onLogin, onLogout, onToken }) {
         setUser(null);
         if (onLogout) onLogout();
         // Only redirect, do not fetch / again
-        window.location.href = "http://localhost:3000/";
+        window.location.href = "https://pappater.github.io/notebook";
       })
       .catch(() => {
         // Always redirect even if logout API fails
-        window.location.href = "http://localhost:3000/";
+        window.location.href = "https://pappater.github.io/notebook/";
       });
   };
 

@@ -11,7 +11,7 @@ from github import Github, InputFileContent
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
+CORS(app, supports_credentials=True, origins=["https://pappater.github.io/notebook"])
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(16))
 
 
@@ -95,7 +95,7 @@ def github_callback():
     session['github_token'] = access_token
     session['github_user'] = user_json
     # Redirect to frontend (adjust as needed)
-    return redirect('http://localhost:3000/')
+    return redirect('hhttps://pappater.github.io/notebook/')
 
 @app.route('/api/status')
 def api_status():
