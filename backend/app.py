@@ -12,6 +12,10 @@ from github import Github, InputFileContent
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=["https://pappater.github.io", "https://pappater.github.io/notebook", "http://localhost:3000", "http://127.0.0.1:3000"])
+app.config.update(
+    SESSION_COOKIE_SAMESITE='None',
+    SESSION_COOKIE_SECURE=True
+)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(16))
 
 
