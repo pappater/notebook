@@ -63,15 +63,27 @@ function GithubAuthButton({ onLogin, onLogout, onToken }) {
 
   if (loggedIn && user) {
     return (
-      <button onClick={handleLogout} style={{ margin: "10px" }}>
+      <div
+        className="modal-menu-btn"
+        onClick={handleLogout}
+        style={{ cursor: 'pointer', fontSize: '2rem', fontWeight: 700, marginBottom: 24, width: '100%', background: 'none', border: 'none', color: '#222', textAlign: 'left', padding: '18px 0', borderRadius: 8, letterSpacing: 1, transition: 'background 0.2s' }}
+        tabIndex={0}
+        role="button"
+      >
         Logout with GitHub ({user.login})
-      </button>
+      </div>
     );
   }
   return (
-    <button onClick={handleLogin} style={{ margin: "10px" }}>
+    <div
+      className="modal-menu-btn"
+      onClick={handleLogin}
+      style={{ cursor: 'pointer', fontSize: '2rem', fontWeight: 700, marginBottom: 24, width: '100%', background: 'none', border: 'none', color: '#222', textAlign: 'left', padding: '18px 0', borderRadius: 8, letterSpacing: 1, transition: 'background 0.2s' }}
+      tabIndex={0}
+      role="button"
+    >
       Login with GitHub
-    </button>
+    </div>
   );
 }
 

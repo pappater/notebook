@@ -3,79 +3,67 @@ import GithubAuthButton from "./GithubAuthButton";
 import "./HamburgerMenu.css";
 
 function HamburgerMenu({ darkMode, onToken }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalUrl, setModalUrl] = useState(null);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const openInModal = (url) => {
-    setModalUrl(url);
-    setIsOpen(false);
-  };
-
-  const closeModal = () => {
-    setModalUrl(null);
-  };
+  const [modalOpen, setModalOpen] = useState(false);
+  const [iframeUrl, setIframeUrl] = useState(null);
 
   const links = [
-    { name: "Yearigy", url: "https://yearigy.com" },
-    { name: "Blog", url: "https://blog.example.com" },
-    { name: "Articlay", url: "https://articlay.com" },
+    { name: "Yearify", url: "https://pappater.github.io/yearprogress/" },
+    { name: "Blog", url: "https://pappater.github.io/blog/" },
+    { name: "Articlay", url: "https://pappater.github.io/articlay/" },
   ];
+
+  const openModal = () => {
+    setModalOpen(true);
+    setIframeUrl(null);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+    setIframeUrl(null);
+  };
+  const handleMenuClick = (url) => {
+    setIframeUrl(url);
+  };
 
   return (
     <>
-      <button className="hamburger-btn" onClick={toggleMenu}>
-        <div className={`hamburger-icon ${isOpen ? "open" : ""}`}>
+      <button className="hamburger-btn" onClick={openModal}>
+        <div className={`hamburger-icon ${modalOpen ? "open" : ""}`}>
           <span></span>
           <span></span>
           <span></span>
         </div>
       </button>
-
-      <div className={`menu-overlay ${isOpen ? "open" : ""}`}>
-        <div className="menu-content">
-          <h2>My Applications</h2>
-          <ul className="menu-links">
-            {links.map((link, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => openInModal(link.url)}
-                  className="menu-link-btn"
-                >
-                  {link.name}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div style={{ marginTop: "20px", textAlign: "center" }}>
-            <GithubAuthButton onToken={onToken} />
-          </div>
-          <button className="close-menu" onClick={toggleMenu}>
-            Close
-          </button>
-        </div>
-      </div>
-
-      {modalUrl && (
-        <div className="iframe-modal-overlay" onClick={closeModal}>
-          <div
-            className="iframe-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="iframe-modal-header">
-              <h3>Application Viewer</h3>
-              <button className="iframe-modal-close" onClick={closeModal}>
-                715
-              </button>
+      {modalOpen && (
+        <div className="fullscreen-modal-overlay">
+          <div className="fullscreen-modal-content">
+            <div className="fullscreen-modal-left">
+              <button className="iframe-modal-close" onClick={closeModal} style={{ fontSize: '6rem', lineHeight: '1', background: 'transparent', border: 'none', color: '#222', cursor: 'pointer', marginBottom: '48px', alignSelf: 'flex-start', fontWeight: 900, padding: 0 }}>×</button>
+              <ul className="modal-menu-list">
+                <li>
+                  <GithubAuthButton
+                    onToken={onToken}
+                    className="modal-menu-btn"
+                    style={{ fontSize: '2rem', fontWeight: 700, marginBottom: 24, width: '100%', background: 'none', border: 'none', color: '#222', textAlign: 'left', padding: '18px 0', borderRadius: 8, letterSpacing: 1, cursor: 'pointer', transition: 'background 0.2s' }}
+                  />
+                </li>
+                {links.map((link, idx) => (
+                  <li key={idx}>
+                    <button className="modal-menu-btn" onClick={() => handleMenuClick(link.url)}>{link.name}</button>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <iframe
-              src={modalUrl}
-              title="Application Viewer"
-              className="iframe-modal-frame"
-            />
+            <div className="fullscreen-modal-right">
+              <div className="fullscreen-modal-header"></div>
+              {iframeUrl && (
+                <iframe
+                  src={iframeUrl}
+                  title="Application Viewer"
+                  className="iframe-modal-frame"
+                  style={{ width: '100%', height: '100%', border: 'none', borderRadius: 0 }}
+                />
+              )}
+            </div>
           </div>
         </div>
       )}
