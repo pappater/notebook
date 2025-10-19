@@ -95,7 +95,7 @@ def github_callback():
     session['github_token'] = access_token
     session['github_user'] = user_json
     # Redirect to frontend (adjust as needed)
-    return redirect('hhttps://pappater.github.io/notebook/')
+    return redirect('https://pappater.github.io/notebook/')
 
 @app.route('/api/status')
 def api_status():
