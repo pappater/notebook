@@ -92,6 +92,7 @@ function App() {
                         if (isMounted) {
                           setTodos(parsed.todos || []);
                           setNotes(parsed.notes || []);
+                          setCurrentNote(parsed.currentNote || null);
                           setLoading(false);
                         }
                       } catch (e) {
@@ -109,6 +110,7 @@ function App() {
                     if (isMounted) {
                       setTodos(parsed.todos || []);
                       setNotes(parsed.notes || []);
+                      setCurrentNote(parsed.currentNote || null);
                       setLoading(false);
                     }
                   } catch (e) {
@@ -152,6 +154,7 @@ function App() {
               setGistId(newGist.id);
               setTodos([]);
               setNotes([]);
+              setCurrentNote(null);
               setLoading(false);
             })
             .catch(err => {
@@ -173,7 +176,7 @@ function App() {
 
   useEffect(() => {
     // Save data to gist when todos or notes change
-    console.log('Save-to-gist useEffect triggered:', { githubToken, gistId, todos, notes });
+    console.log('Save-to-gist useEffect triggered:', { githubToken, gistId, todos, notes, currentNote });
     if (githubToken && gistId) {
       fetch(`https://api.github.com/gists/${gistId}`, {
         method: 'PATCH',
@@ -185,7 +188,7 @@ function App() {
         body: JSON.stringify({
           files: {
             'notebook-data.json': {
-              content: JSON.stringify({ todos, notes }, null, 2)
+              content: JSON.stringify({ todos, notes, currentNote }, null, 2)
             }
           }
         })
@@ -203,7 +206,7 @@ function App() {
           console.error('PATCH gist exception:', err);
         });
     }
-  }, [todos, notes, githubToken, gistId]);
+  }, [todos, notes, currentNote, githubToken, gistId]);
 
   // New useEffect to trigger loadOrCreateGist when both githubToken and userLogin are set
   useEffect(() => {
