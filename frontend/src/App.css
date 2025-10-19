@@ -42,6 +42,12 @@ body {
   letter-spacing: 2px;
 }
 
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .theme-toggle {
   background: none;
   border: 2px solid currentColor;
@@ -58,22 +64,18 @@ body {
 }
 
 .main-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.left-panel,
-.right-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.center-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
 }
 
 @media (max-width: 768px) {
-  .main-content {
+  .center-panel {
     grid-template-columns: 1fr;
   }
 }
