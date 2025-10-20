@@ -83,9 +83,8 @@
 
 /* Collapsed mode: center initials vertically and horizontally */
 .fullscreen-modal-left[style*="width: 80px"] {
-  padding: 48px 0 48px 0 !important;
+  padding: 0 !important;
   align-items: center !important;
-  justify-content: center !important;
 }
 
 .modal-menu-list {
