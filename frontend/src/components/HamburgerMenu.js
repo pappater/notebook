@@ -3,7 +3,7 @@ import GithubAuthButton from "./GithubAuthButton";
 import "./HamburgerMenu.css";
 
 function HamburgerMenu({ darkMode, onToken }) {
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 600;
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 600;
   const [modalOpen, setModalOpen] = useState(false);
   // Default to Articlay URL
   const links = [
@@ -42,42 +42,63 @@ function HamburgerMenu({ darkMode, onToken }) {
       </button>
       {modalOpen && (
         <div
-          className={`fullscreen-modal-overlay ${darkMode ? "dark-mode" : "light-mode"}`}
+          className={`fullscreen-modal-overlay ${
+            darkMode ? "dark-mode" : "light-mode"
+          }`}
         >
           <div
             className="fullscreen-modal-content"
-            style={isMobile ? { flexDirection: 'column', width: '100vw', height: '100vh', overflow: 'hidden' } : {}}
+            style={
+              isMobile
+                ? {
+                    flexDirection: "column",
+                    width: "100vw",
+                    height: "100vh",
+                    overflow: "hidden",
+                  }
+                : {}
+            }
           >
             <div
               className="fullscreen-modal-left"
-              style={isMobile
-                ? {
-                    width: '100vw',
-                    minWidth: 0,
-                    maxWidth: '100vw',
-                    padding: '16px 4px 8px 4px',
-                    borderRight: 'none',
-                    borderBottom: '1px solid #ddd',
-                    minHeight: 'unset',
-                    flexDirection: 'row',
-                    alignItems: 'flex-start',
-                    justifyContent: 'flex-start',
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
-                    maxHeight: 80,
-                    transition: 'none',
-                  }
-                : {
-                    width: collapsed ? '80px' : '340px',
-                    transition: 'width 0.3s',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                  }
+              style={
+                isMobile
+                  ? {
+                      width: "100vw",
+                      minWidth: 0,
+                      maxWidth: "100vw",
+                      padding: "16px 4px 8px 4px",
+                      borderRight: "none",
+                      borderBottom: "1px solid #ddd",
+                      minHeight: "unset",
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      justifyContent: "flex-start",
+                      overflowX: "auto",
+                      overflowY: "hidden",
+                      maxHeight: 80,
+                      transition: "none",
+                    }
+                  : {
+                      width: collapsed ? "80px" : "340px",
+                      transition: "width 0.3s",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }
               }
             >
               <div
-                style={{
+                style={isMobile ? {
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "100%",
+                  position: "relative",
+                  gap: 0,
+                  margin: 0,
+                  padding: 0,
+                } : {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
@@ -94,10 +115,10 @@ function HamburgerMenu({ darkMode, onToken }) {
                     border: "none",
                     color: "#222",
                     cursor: "pointer",
-                    marginBottom: collapsed ? "56px" : "32px",
-                    marginTop: collapsed ? "0px" : 0,
-                    marginLeft: collapsed ? "8px" : 0,
-                    alignSelf: collapsed ? "flex-start" : "flex-start",
+                    marginBottom: isMobile ? 0 : collapsed ? "56px" : "32px",
+                    marginTop: isMobile ? 0 : collapsed ? "0px" : 0,
+                    marginLeft: isMobile ? 0 : collapsed ? "8px" : 0,
+                    alignSelf: "flex-start",
                     fontWeight: 900,
                     padding: 0,
                     display: "block",
@@ -158,20 +179,24 @@ function HamburgerMenu({ darkMode, onToken }) {
               </div>
               <ul
                 className="modal-menu-list"
-                style={isMobile ? {
-                  flexDirection: 'row',
-                  alignItems: 'flex-start',
-                  justifyContent: 'flex-start',
-                  width: '100%',
-                  padding: 0,
-                  margin: 0,
-                  overflowX: 'auto',
-                  overflowY: 'hidden',
-                  maxWidth: '100vw',
-                } : { paddingLeft: 0 }}
+                style={
+                  isMobile
+                    ? {
+                        flexDirection: "row",
+                        alignItems: "flex-start",
+                        justifyContent: "flex-start",
+                        width: "100%",
+                        padding: 0,
+                        margin: 0,
+                        overflowX: "auto",
+                        overflowY: "hidden",
+                        maxWidth: "100vw",
+                      }
+                    : { paddingLeft: 0 }
+                }
               >
                 <li>
-                  {(!isMobile && collapsed) ? (
+                  {!isMobile && collapsed ? (
                     <div
                       className="modal-menu-btn"
                       style={{
@@ -225,7 +250,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                       }`}
                       onClick={() => handleMenuClick(link.url, idx)}
                       style={{
-                        fontSize: (!isMobile && collapsed) ? "3.2rem" : "2rem",
+                        fontSize: !isMobile && collapsed ? "3.2rem" : "2rem",
                         fontWeight: 900,
                         marginBottom: 4,
                         width: "100%",
@@ -242,9 +267,9 @@ function HamburgerMenu({ darkMode, onToken }) {
                           "background 0.2s, border 0.2s, color 0.2s, padding 0.2s",
                         position: "relative",
                       }}
-                      title={(!isMobile && collapsed) ? link.name : undefined}
+                      title={!isMobile && collapsed ? link.name : undefined}
                     >
-                      {(!isMobile && collapsed) ? (
+                      {!isMobile && collapsed ? (
                         <span title={link.name}>{link.name[0]}</span>
                       ) : (
                         link.name
@@ -256,35 +281,43 @@ function HamburgerMenu({ darkMode, onToken }) {
             </div>
             <div
               className="fullscreen-modal-right"
-              style={isMobile ? {
-                flex: 1,
-                width: '100vw',
-                minWidth: 0,
-                maxWidth: '100vw',
-                height: 'calc(100vh - 80px)',
-                minHeight: 0,
-                overflow: 'auto',
-              } : {}}
+              style={
+                isMobile
+                  ? {
+                      flex: 1,
+                      width: "100vw",
+                      minWidth: 0,
+                      maxWidth: "100vw",
+                      height: "calc(100vh - 80px)",
+                      minHeight: 0,
+                      overflow: "auto",
+                    }
+                  : {}
+              }
             >
               {iframeUrl && (
                 <iframe
                   src={iframeUrl}
                   title="Application Viewer"
                   className="iframe-modal-frame"
-                  style={isMobile ? {
-                    width: '100vw',
-                    height: '100%',
-                    minWidth: 0,
-                    minHeight: 0,
-                    borderRadius: 0,
-                    display: 'block',
-                    border: 'none',
-                  } : {
-                    width: '100%',
-                    height: '100%',
-                    border: 'none',
-                    borderRadius: 0,
-                  }}
+                  style={
+                    isMobile
+                      ? {
+                          width: "100vw",
+                          height: "100%",
+                          minWidth: 0,
+                          minHeight: 0,
+                          borderRadius: 0,
+                          display: "block",
+                          border: "none",
+                        }
+                      : {
+                          width: "100%",
+                          height: "100%",
+                          border: "none",
+                          borderRadius: 0,
+                        }
+                  }
                 />
               )}
             </div>
