@@ -4,6 +4,7 @@ import Clock from "./components/Clock";
 import HamburgerMenu from "./components/HamburgerMenu";
 import TodoList from "./components/TodoList";
 import NoteEditor from "./components/NoteEditor";
+import GithubAuthButton from "./components/GithubAuthButton";
 
 function App() {
   console.log("App component rendered");
@@ -421,11 +422,63 @@ function App() {
           </div>
         )}
         {loading ? (
-          <div style={{ textAlign: "center", marginTop: "40px" }}>
-            <div className="loader" style={{ fontSize: "1.5em" }}>
-              Loading data...
+          userLogin ? (
+            <div style={{ textAlign: "center", marginTop: "40px" }}>
+              <div className="loader" style={{ fontSize: "1.5em" }}>
+                Loading data...
+              </div>
             </div>
-          </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: 140,
+                minHeight: 220,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "1.2em",
+                  marginBottom: 24,
+                  border: darkMode ? "2px solid #eee" : "2px solid #111",
+                  borderRadius: 18,
+                  padding: "32px 32px 24px 32px",
+                  background: darkMode ? "#23272f" : "#fff",
+                  color: darkMode ? "#fff" : "#111",
+                  boxShadow: darkMode
+                    ? "0 2px 12px 0 rgba(0,0,0,0.18)"
+                    : "0 2px 12px 0 rgba(0,0,0,0.04)",
+                  textAlign: "center",
+                  fontWeight: 600,
+                  maxWidth: 480,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                Please log in with GitHub to use the notebook.
+                <div
+                  style={{
+                    marginTop: 24,
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div style={{ minWidth: 220 }}>
+                    <GithubAuthButton
+                      onToken={handleToken}
+                      darkMode={darkMode}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
         ) : (
           <div className="center-panel">
             <TodoList todos={todos} setTodos={setTodos} darkMode={darkMode} />

@@ -40,7 +40,9 @@ function HamburgerMenu({ darkMode, onToken }) {
       </button>
       {modalOpen && (
         <div
-          className={`fullscreen-modal-overlay ${darkMode ? "dark-mode" : "light-mode"}`}
+          className={`fullscreen-modal-overlay ${
+            darkMode ? "dark-mode" : "light-mode"
+          }`}
         >
           <div className="fullscreen-modal-content">
             <div

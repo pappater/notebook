@@ -3,7 +3,7 @@ console.log("GithubAuthButton component loaded");
 
 const BACKEND_URL = "https://notebook-8eyk.onrender.com";
 
-function GithubAuthButton({ onLogin, onLogout, onToken }) {
+function GithubAuthButton({ onLogin, onLogout, onToken, darkMode }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -66,7 +66,21 @@ function GithubAuthButton({ onLogin, onLogout, onToken }) {
       <div
         className="modal-menu-btn"
         onClick={handleLogout}
-        style={{ cursor: 'pointer', fontSize: '2rem', fontWeight: 700, marginBottom: 24, width: '100%', background: 'none', border: 'none', color: '#222', textAlign: 'left', padding: '18px 0', borderRadius: 8, letterSpacing: 1, transition: 'background 0.2s' }}
+        style={{
+          cursor: "pointer",
+          fontSize: "2rem",
+          fontWeight: 700,
+          marginBottom: 24,
+          width: "100%",
+          background: "none",
+          border: "none",
+          color: darkMode ? "#fff" : "#222",
+          textAlign: "left",
+          padding: "18px 0",
+          borderRadius: 8,
+          letterSpacing: 1,
+          transition: "background 0.2s",
+        }}
         tabIndex={0}
         role="button"
       >
@@ -78,7 +92,21 @@ function GithubAuthButton({ onLogin, onLogout, onToken }) {
     <div
       className="modal-menu-btn"
       onClick={handleLogin}
-      style={{ cursor: 'pointer', fontSize: '2rem', fontWeight: 700, marginBottom: 24, width: '100%', background: 'none', border: 'none', color: '#222', textAlign: 'left', padding: '18px 0', borderRadius: 8, letterSpacing: 1, transition: 'background 0.2s' }}
+      style={{
+        cursor: "pointer",
+        fontSize: "2rem",
+        fontWeight: 700,
+        marginBottom: 24,
+        width: "100%",
+        background: "none",
+        border: "none",
+        color: darkMode ? "#fff" : "#222",
+        textAlign: "left",
+        padding: "18px 0",
+        borderRadius: 8,
+        letterSpacing: 1,
+        transition: "background 0.2s",
+      }}
       tabIndex={0}
       role="button"
     >
