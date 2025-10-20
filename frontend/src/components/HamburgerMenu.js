@@ -4,24 +4,27 @@ import "./HamburgerMenu.css";
 
 function HamburgerMenu({ darkMode, onToken }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [iframeUrl, setIframeUrl] = useState(null);
-
+  // Default to Articlay URL
   const links = [
     { name: "Yearify", url: "https://pappater.github.io/yearprogress/" },
     { name: "Blog", url: "https://pappater.github.io/blog/" },
     { name: "Articlay", url: "https://pappater.github.io/articlay/" },
   ];
+  const defaultMenuIdx = 2; // Articlay
+  const [iframeUrl, setIframeUrl] = useState(links[defaultMenuIdx].url);
+  const [selectedIdx, setSelectedIdx] = useState(defaultMenuIdx);
 
   const openModal = () => {
     setModalOpen(true);
-    setIframeUrl(null);
+    setIframeUrl(links[defaultMenuIdx].url); // Default to Articlay
   };
   const closeModal = () => {
     setModalOpen(false);
     setIframeUrl(null);
   };
-  const handleMenuClick = (url) => {
+  const handleMenuClick = (url, idx) => {
     setIframeUrl(url);
+    setSelectedIdx(idx);
   };
 
   const [collapsed, setCollapsed] = useState(true);
@@ -62,15 +65,17 @@ function HamburgerMenu({ darkMode, onToken }) {
                   onClick={closeModal}
                   style={{
                     fontSize: "6rem",
-                    lineHeight: "1",
                     background: "transparent",
                     border: "none",
                     color: "#222",
                     cursor: "pointer",
-                    marginBottom: collapsed ? "8px" : "32px",
-                    alignSelf: "flex-start",
+                    marginBottom: collapsed ? "56px" : "32px",
+                    marginTop: collapsed ? "0px" : 0,
+                    marginLeft: collapsed ? "8px" : 0,
+                    alignSelf: collapsed ? "flex-start" : "flex-start",
                     fontWeight: 900,
                     padding: 0,
+                    display: "block",
                   }}
                 >
                   ×
@@ -105,7 +110,6 @@ function HamburgerMenu({ darkMode, onToken }) {
                   className="expand-menu-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    e.preventDefault();
                     setCollapsed(false);
                   }}
                   style={{
@@ -114,11 +118,12 @@ function HamburgerMenu({ darkMode, onToken }) {
                     border: "none",
                     color: "#222",
                     cursor: "pointer",
-                    marginTop: "40px",
+                    marginTop: "0px",
                     marginBottom: "32px",
-                    alignSelf: "flex-start",
+                    alignSelf: "center",
                     fontWeight: 700,
                     padding: 0,
+                    display: "block",
                   }}
                   aria-label="Expand menu"
                 >
@@ -176,27 +181,35 @@ function HamburgerMenu({ darkMode, onToken }) {
                 {links.map((link, idx) => (
                   <li key={idx}>
                     <button
-                      className="modal-menu-btn"
-                      onClick={() => handleMenuClick(link.url)}
+                      className={`modal-menu-btn${
+                        selectedIdx === idx ? " selected" : ""
+                      }`}
+                      onClick={() => handleMenuClick(link.url, idx)}
                       style={{
                         fontSize: collapsed ? "3.2rem" : "2rem",
                         fontWeight: 900,
                         marginBottom: 24,
                         width: "100%",
-                        background: "none",
-                        border: "none",
-                        color: "#222",
+                        background: selectedIdx === idx ? "#e0e7ff" : "none",
+                        border:
+                          selectedIdx === idx ? "2px solid #6366f1" : "none",
+                        color: selectedIdx === idx ? "#3730a3" : "#222",
                         textAlign: "left",
-                        padding: "18px 0",
+                        padding: selectedIdx === idx ? "18px 18px" : "18px 0",
                         borderRadius: 8,
                         letterSpacing: 1,
                         cursor: "pointer",
-                        transition: "background 0.2s",
+                        transition:
+                          "background 0.2s, border 0.2s, color 0.2s, padding 0.2s",
                         position: "relative",
                       }}
                       title={collapsed ? link.name : undefined}
                     >
-                      {collapsed ? link.name[0] : link.name}
+                      {collapsed ? (
+                        <span title={link.name}>{link.name[0]}</span>
+                      ) : (
+                        link.name
+                      )}
                     </button>
                   </li>
                 ))}

@@ -1,3 +1,51 @@
+@media (max-width: 600px) {
+  .fullscreen-modal-content {
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+  }
+  .fullscreen-modal-left {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    padding: 24px 8px !important;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    min-height: unset;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+  .modal-menu-list {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .modal-menu-btn {
+    font-size: 2.2rem !important;
+    margin: 0 8px 0 0 !important;
+    padding: 12px 0 !important;
+    width: auto !important;
+    min-width: 48px;
+    border-radius: 6px;
+  }
+  .iframe-modal-close {
+    font-size: 3.2rem !important;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-left: 8px !important;
+    align-self: flex-start !important;
+  }
+  .expand-menu-btn, .collapse-menu-btn {
+    font-size: 1.6rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    align-self: flex-start !important;
+  }
+}
 /* Fullscreen modal overlay for HamburgerMenu */
 .fullscreen-modal-overlay {
   position: fixed;
@@ -27,6 +75,30 @@
   flex-direction: column;
   align-items: flex-start;
   border-right: 1px solid #ddd;
+  min-width: 80px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  transition: width 0.3s;
+}
+
+/* Collapsed mode: center initials vertically and horizontally */
+.fullscreen-modal-left[style*="width: 80px"] {
+  padding: 48px 0 48px 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.modal-menu-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .fullscreen-modal-right {
