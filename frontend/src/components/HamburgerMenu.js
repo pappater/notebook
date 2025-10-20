@@ -216,7 +216,6 @@ function HamburgerMenu({ darkMode, onToken }) {
               </ul>
             </div>
             <div className="fullscreen-modal-right">
-              <div className="fullscreen-modal-header"></div>
               {iframeUrl && (
                 <iframe
                   src={iframeUrl}
