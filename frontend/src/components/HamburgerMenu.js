@@ -118,7 +118,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                     border: "none",
                     color: "#222",
                     cursor: "pointer",
-                    marginTop: "0px",
+                    marginTop: "32px",
                     marginBottom: "32px",
                     alignSelf: "center",
                     fontWeight: 700,
@@ -188,7 +188,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                       style={{
                         fontSize: collapsed ? "3.2rem" : "2rem",
                         fontWeight: 900,
-                        marginBottom: 24,
+                        marginBottom: 4,
                         width: "100%",
                         background: selectedIdx === idx ? "#e0e7ff" : "none",
                         border:
