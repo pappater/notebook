@@ -57,6 +57,17 @@ body {
   font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  color: #222;
+}
+
+.dark-mode .theme-toggle {
+  color: #fff;
+  border-color: #fff;
+}
+
+.light-mode .theme-toggle {
+  color: #222;
+  border-color: #222;
 }
 
 .theme-toggle:hover {
