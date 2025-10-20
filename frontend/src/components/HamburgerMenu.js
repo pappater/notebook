@@ -10,10 +10,13 @@ function HamburgerMenu({ darkMode, onToken }) {
     { name: "Yearify", url: "https://pappater.github.io/yearprogress/" },
     { name: "Blog", url: "https://pappater.github.io/blog/" },
     { name: "Articlay", url: "https://pappater.github.io/articlay/" },
+    { name: "Pacman", url: "__PACMAN__" },
   ];
   const defaultMenuIdx = 2; // Articlay
   const [iframeUrl, setIframeUrl] = useState(links[defaultMenuIdx].url);
   const [selectedIdx, setSelectedIdx] = useState(defaultMenuIdx);
+  // Import Pacman component
+  const Pacman = require("./Pacman").default;
 
   const openModal = () => {
     setModalOpen(true);
@@ -296,29 +299,35 @@ function HamburgerMenu({ darkMode, onToken }) {
               }
             >
               {iframeUrl && (
-                <iframe
-                  src={iframeUrl}
-                  title="Application Viewer"
-                  className="iframe-modal-frame"
-                  style={
-                    isMobile
-                      ? {
-                          width: "100vw",
-                          height: "100%",
-                          minWidth: 0,
-                          minHeight: 0,
-                          borderRadius: 0,
-                          display: "block",
-                          border: "none",
-                        }
-                      : {
-                          width: "100%",
-                          height: "100%",
-                          border: "none",
-                          borderRadius: 0,
-                        }
-                  }
-                />
+                iframeUrl === "__PACMAN__" ? (
+                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: darkMode ? "#111" : "#fff" }}>
+                    <Pacman />
+                  </div>
+                ) : (
+                  <iframe
+                    src={iframeUrl}
+                    title="Application Viewer"
+                    className="iframe-modal-frame"
+                    style={
+                      isMobile
+                        ? {
+                            width: "100vw",
+                            height: "100%",
+                            minWidth: 0,
+                            minHeight: 0,
+                            borderRadius: 0,
+                            display: "block",
+                            border: "none",
+                          }
+                        : {
+                            width: "100%",
+                            height: "100%",
+                            border: "none",
+                            borderRadius: 0,
+                          }
+                    }
+                  />
+                )
               )}
             </div>
           </div>
