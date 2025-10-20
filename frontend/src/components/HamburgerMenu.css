@@ -1,3 +1,9 @@
+.fullscreen-modal-overlay.dark-mode .modal-menu-btn,
+.fullscreen-modal-overlay.dark-mode .modal-menu-btn span,
+.fullscreen-modal-overlay.dark-mode .modal-menu-btn.selected,
+.fullscreen-modal-overlay.dark-mode .modal-menu-btn.selected span {
+  color: #fff !important;
+}
 @media (max-width: 600px) {
   .fullscreen-modal-content {
     flex-direction: column;
@@ -53,11 +59,17 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #fff;
   z-index: 3000;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
+}
+
+.fullscreen-modal-overlay.light-mode {
+  background: #fff;
+}
+.fullscreen-modal-overlay.dark-mode {
+  background: #18181b;
 }
 
 .fullscreen-modal-content {
@@ -79,6 +91,34 @@
   min-height: 100vh;
   box-sizing: border-box;
   transition: width 0.3s;
+}
+.fullscreen-modal-overlay.dark-mode .fullscreen-modal-left {
+  background: #23232a;
+  color: #f3f3f3;
+  border-right: 1px solid #333;
+}
+.fullscreen-modal-overlay.dark-mode .modal-menu-btn {
+  color: #f3f3f3;
+}
+.fullscreen-modal-overlay.dark-mode .modal-menu-btn.selected {
+  background: #312e81 !important;
+  border: 2px solid #6366f1 !important;
+  color: #fff !important;
+}
+.fullscreen-modal-overlay.dark-mode .modal-menu-btn:hover {
+  background: #27272a !important;
+}
+.fullscreen-modal-overlay.dark-mode .iframe-modal-close,
+.fullscreen-modal-overlay.dark-mode .expand-menu-btn,
+.fullscreen-modal-overlay.dark-mode .collapse-menu-btn {
+  color: #f3f3f3 !important;
+}
+.fullscreen-modal-overlay.dark-mode .iframe-modal-close:hover {
+  background: #fff !important;
+  color: #18181b !important;
+}
+.fullscreen-modal-overlay.dark-mode .fullscreen-modal-right {
+  background: #18181b;
 }
 
 /* Collapsed mode: center initials vertically and horizontally */
@@ -400,14 +440,22 @@
   transition: all 0.3s ease;
 }
 
-.iframe-modal-close:hover {
-  background: white;
-  color: #1a1a1a;
-}
-
-.iframe-modal-frame {
-  flex: 1;
+.iframe-modal-close {
+  background: transparent;
   border: none;
-  width: 100%;
-  height: 100%;
+  color: inherit;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: inherit;
+  display: block;
+  transition: none;
+  box-shadow: none;
+}
+.iframe-modal-close:hover {
+  background: transparent !important;
+  color: inherit !important;
+  border: none !important;
+  box-shadow: none !important;
 }
