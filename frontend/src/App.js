@@ -5,7 +5,6 @@ import HamburgerMenu from "./components/HamburgerMenu";
 import TodoList from "./components/TodoList";
 import NoteEditor from "./components/NoteEditor";
 
-import GithubAuthButton from "./components/GithubAuthButton";
 
 function App() {
   console.log("App component rendered");
