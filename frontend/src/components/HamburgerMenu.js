@@ -3,6 +3,7 @@ import GithubAuthButton from "./GithubAuthButton";
 import "./HamburgerMenu.css";
 
 function HamburgerMenu({ darkMode, onToken }) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 600;
   const [modalOpen, setModalOpen] = useState(false);
   // Default to Articlay URL
   const links = [
@@ -27,7 +28,8 @@ function HamburgerMenu({ darkMode, onToken }) {
     setSelectedIdx(idx);
   };
 
-  const [collapsed, setCollapsed] = useState(true);
+  // On mobile, always show full menu names (collapsed = false), on desktop allow collapse/expand
+  const [collapsed, setCollapsed] = useState(!isMobile);
 
   return (
     <>
@@ -40,20 +42,39 @@ function HamburgerMenu({ darkMode, onToken }) {
       </button>
       {modalOpen && (
         <div
-          className={`fullscreen-modal-overlay ${
-            darkMode ? "dark-mode" : "light-mode"
-          }`}
+          className={`fullscreen-modal-overlay ${darkMode ? "dark-mode" : "light-mode"}`}
         >
-          <div className="fullscreen-modal-content">
+          <div
+            className="fullscreen-modal-content"
+            style={isMobile ? { flexDirection: 'column', width: '100vw', height: '100vh', overflow: 'hidden' } : {}}
+          >
             <div
               className="fullscreen-modal-left"
-              style={{
-                width: collapsed ? "80px" : "340px",
-                transition: "width 0.3s",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
+              style={isMobile
+                ? {
+                    width: '100vw',
+                    minWidth: 0,
+                    maxWidth: '100vw',
+                    padding: '16px 4px 8px 4px',
+                    borderRight: 'none',
+                    borderBottom: '1px solid #ddd',
+                    minHeight: 'unset',
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    justifyContent: 'flex-start',
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                    maxHeight: 80,
+                    transition: 'none',
+                  }
+                : {
+                    width: collapsed ? '80px' : '340px',
+                    transition: 'width 0.3s',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                  }
+              }
             >
               <div
                 style={{
@@ -84,7 +105,8 @@ function HamburgerMenu({ darkMode, onToken }) {
                 >
                   ×
                 </button>
-                {!collapsed && (
+                {/* Only show collapse/expand on desktop */}
+                {!isMobile && !collapsed && (
                   <button
                     className="collapse-menu-btn"
                     onClick={(e) => {
@@ -108,35 +130,48 @@ function HamburgerMenu({ darkMode, onToken }) {
                     ▲
                   </button>
                 )}
+                {!isMobile && collapsed && (
+                  <button
+                    className="expand-menu-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCollapsed(false);
+                    }}
+                    style={{
+                      fontSize: "2.2rem",
+                      background: "transparent",
+                      border: "none",
+                      color: "#222",
+                      cursor: "pointer",
+                      marginTop: "32px",
+                      marginBottom: "32px",
+                      alignSelf: "center",
+                      fontWeight: 700,
+                      padding: 0,
+                      display: "block",
+                    }}
+                    aria-label="Expand menu"
+                  >
+                    ▼
+                  </button>
+                )}
               </div>
-              {collapsed && (
-                <button
-                  className="expand-menu-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCollapsed(false);
-                  }}
-                  style={{
-                    fontSize: "2.2rem",
-                    background: "transparent",
-                    border: "none",
-                    color: "#222",
-                    cursor: "pointer",
-                    marginTop: "32px",
-                    marginBottom: "32px",
-                    alignSelf: "center",
-                    fontWeight: 700,
-                    padding: 0,
-                    display: "block",
-                  }}
-                  aria-label="Expand menu"
-                >
-                  ▼
-                </button>
-              )}
-              <ul className="modal-menu-list" style={{ paddingLeft: 0 }}>
+              <ul
+                className="modal-menu-list"
+                style={isMobile ? {
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  width: '100%',
+                  padding: 0,
+                  margin: 0,
+                  overflowX: 'auto',
+                  overflowY: 'hidden',
+                  maxWidth: '100vw',
+                } : { paddingLeft: 0 }}
+              >
                 <li>
-                  {collapsed ? (
+                  {(!isMobile && collapsed) ? (
                     <div
                       className="modal-menu-btn"
                       style={{
@@ -190,7 +225,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                       }`}
                       onClick={() => handleMenuClick(link.url, idx)}
                       style={{
-                        fontSize: collapsed ? "3.2rem" : "2rem",
+                        fontSize: (!isMobile && collapsed) ? "3.2rem" : "2rem",
                         fontWeight: 900,
                         marginBottom: 4,
                         width: "100%",
@@ -207,9 +242,9 @@ function HamburgerMenu({ darkMode, onToken }) {
                           "background 0.2s, border 0.2s, color 0.2s, padding 0.2s",
                         position: "relative",
                       }}
-                      title={collapsed ? link.name : undefined}
+                      title={(!isMobile && collapsed) ? link.name : undefined}
                     >
-                      {collapsed ? (
+                      {(!isMobile && collapsed) ? (
                         <span title={link.name}>{link.name[0]}</span>
                       ) : (
                         link.name
@@ -219,16 +254,35 @@ function HamburgerMenu({ darkMode, onToken }) {
                 ))}
               </ul>
             </div>
-            <div className="fullscreen-modal-right">
+            <div
+              className="fullscreen-modal-right"
+              style={isMobile ? {
+                flex: 1,
+                width: '100vw',
+                minWidth: 0,
+                maxWidth: '100vw',
+                height: 'calc(100vh - 80px)',
+                minHeight: 0,
+                overflow: 'auto',
+              } : {}}
+            >
               {iframeUrl && (
                 <iframe
                   src={iframeUrl}
                   title="Application Viewer"
                   className="iframe-modal-frame"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    border: "none",
+                  style={isMobile ? {
+                    width: '100vw',
+                    height: '100%',
+                    minWidth: 0,
+                    minHeight: 0,
+                    borderRadius: 0,
+                    display: 'block',
+                    border: 'none',
+                  } : {
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
                     borderRadius: 0,
                   }}
                 />
