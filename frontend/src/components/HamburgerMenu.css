@@ -107,6 +107,8 @@
 }
 .fullscreen-modal-overlay.dark-mode .modal-menu-btn:hover {
   background: #27272a !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
 }
 .fullscreen-modal-overlay.dark-mode .iframe-modal-close,
 .fullscreen-modal-overlay.dark-mode .expand-menu-btn,
@@ -190,8 +192,11 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.modal-menu-btn:hover {
-  background: #e0e0e0;
+.fullscreen-modal-overlay.light-mode .modal-menu-btn:hover {
+  background: #e0e0e0 !important;
+  color: #222 !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
 }
 /* Light/Dark mode support for HamburgerMenu */
 .light-mode .hamburger-btn {

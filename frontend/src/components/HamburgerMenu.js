@@ -134,51 +134,51 @@ function HamburgerMenu({ darkMode, onToken }) {
               )}
               <ul className="modal-menu-list" style={{ paddingLeft: 0 }}>
                 <li>
-                  <div
-                    className="modal-menu-btn"
-                    style={{
-                      fontSize: collapsed ? "3.2rem" : "2rem",
-                      fontWeight: 900,
-                      marginBottom: 24,
-                      width: "100%",
-                      background: "none",
-                      border: "none",
-                      color: "#222",
-                      textAlign: "left",
-                      padding: "18px 0",
-                      borderRadius: 8,
-                      letterSpacing: 1,
-                      cursor: "pointer",
-                      transition: "background 0.2s",
-                      position: "relative",
-                    }}
-                  >
-                    {collapsed ? (
+                  {collapsed ? (
+                    <div
+                      className="modal-menu-btn"
+                      style={{
+                        fontSize: "3.2rem",
+                        fontWeight: 900,
+                        marginBottom: 24,
+                        width: "100%",
+                        background: "none",
+                        border: "none",
+                        color: "#222",
+                        textAlign: "left",
+                        padding: "18px 0",
+                        borderRadius: 8,
+                        letterSpacing: 1,
+                        cursor: "pointer",
+                        transition: "background 0.2s",
+                        position: "relative",
+                      }}
+                    >
                       <span title="GitHub Login" style={{ cursor: "pointer" }}>
                         G
                       </span>
-                    ) : (
-                      <GithubAuthButton
-                        onToken={onToken}
-                        className="modal-menu-btn"
-                        style={{
-                          fontSize: "2rem",
-                          fontWeight: 700,
-                          marginBottom: 24,
-                          width: "100%",
-                          background: "none",
-                          border: "none",
-                          color: "#222",
-                          textAlign: "left",
-                          padding: "18px 0",
-                          borderRadius: 8,
-                          letterSpacing: 1,
-                          cursor: "pointer",
-                          transition: "background 0.2s",
-                        }}
-                      />
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <GithubAuthButton
+                      onToken={onToken}
+                      className="modal-menu-btn"
+                      style={{
+                        fontSize: "2rem",
+                        fontWeight: 700,
+                        marginBottom: 24,
+                        width: "100%",
+                        background: "none",
+                        border: "none",
+                        color: "#222",
+                        textAlign: "left",
+                        padding: "18px 0",
+                        borderRadius: 8,
+                        letterSpacing: 1,
+                        cursor: "pointer",
+                        transition: "background 0.2s",
+                      }}
+                    />
+                  )}
                 </li>
                 {links.map((link, idx) => (
                   <li key={idx}>
