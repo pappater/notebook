@@ -32,7 +32,7 @@ function Pacman() {
     "#.#  #.##.#.#  #.##.#  #..#",
     "#.####.##.#.####.##.####..#",
     "#..........................#",
-    "############################"
+    "############################",
   ];
   // Responsive tile size based on screen width
   const screenWidth = typeof window !== "undefined" ? window.innerWidth : 640;
@@ -44,8 +44,20 @@ function Pacman() {
   const pacman = useRef({ x: 1, y: 1, dx: 1, dy: 0, radius: tileSize * 1.1 });
   // Ghosts
   const ghosts = useRef([
-    { x: Math.floor(cols / 2), y: Math.floor(rows / 2), color: "#f43f5e", dx: 0, dy: 1 },
-    { x: Math.floor(cols / 2) + 2, y: Math.floor(rows / 2), color: "#06b6d4", dx: 1, dy: 0 }
+    {
+      x: Math.floor(cols / 2),
+      y: Math.floor(rows / 2),
+      color: "#f43f5e",
+      dx: 0,
+      dy: 1,
+    },
+    {
+      x: Math.floor(cols / 2) + 2,
+      y: Math.floor(rows / 2),
+      color: "#06b6d4",
+      dx: 1,
+      dy: 0,
+    },
   ]);
   // Pellets
   const pellets = useRef([]);
@@ -62,7 +74,7 @@ function Pacman() {
       }
     }
     pellets.current = newPellets;
-  }, []);
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -91,7 +103,7 @@ function Pacman() {
       }
       ctx.save();
       ctx.beginPath();
-  ctx.arc(px, py, pacman.current.radius, startAngle, endAngle, false);
+      ctx.arc(px, py, pacman.current.radius, startAngle, endAngle, false);
       ctx.lineTo(px, py);
       ctx.closePath();
       ctx.fillStyle = "#ffe600";
@@ -126,9 +138,9 @@ function Pacman() {
         const gx = ghost.x * tileSize + tileSize / 2;
         const gy = ghost.y * tileSize + tileSize / 2;
         ctx.beginPath();
-  ctx.arc(gx, gy, tileSize * 0.7, Math.PI, 2 * Math.PI);
-  ctx.lineTo(gx + tileSize * 0.7, gy + tileSize * 0.7);
-  ctx.lineTo(gx - tileSize * 0.7, gy + tileSize * 0.7);
+        ctx.arc(gx, gy, tileSize * 0.7, Math.PI, 2 * Math.PI);
+        ctx.lineTo(gx + tileSize * 0.7, gy + tileSize * 0.7);
+        ctx.lineTo(gx - tileSize * 0.7, gy + tileSize * 0.7);
         ctx.closePath();
         ctx.fillStyle = ghost.color;
         ctx.fill();
@@ -149,7 +161,6 @@ function Pacman() {
     function clear() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-
 
     function update() {
       if (gameOver) return;
@@ -175,7 +186,11 @@ function Pacman() {
 
       // Pellet collision
       pellets.current.forEach((pellet) => {
-        if (!pellet.eaten && pellet.x === pacman.current.x && pellet.y === pacman.current.y) {
+        if (
+          !pellet.eaten &&
+          pellet.x === pacman.current.x &&
+          pellet.y === pacman.current.y
+        ) {
           pellet.eaten = true;
           setScore((s) => s + 10);
         }
@@ -189,15 +204,23 @@ function Pacman() {
             { dx: 1, dy: 0 },
             { dx: -1, dy: 0 },
             { dx: 0, dy: 1 },
-            { dx: 0, dy: -1 }
+            { dx: 0, dy: -1 },
           ];
           // Sort directions by distance to Pacman
           directions.sort((a, b) => {
-            const da = Math.hypot((ghost.x + a.dx) - pacman.current.x, (ghost.y + a.dy) - pacman.current.y);
-            const db = Math.hypot((ghost.x + b.dx) - pacman.current.x, (ghost.y + b.dy) - pacman.current.y);
+            const da = Math.hypot(
+              ghost.x + a.dx - pacman.current.x,
+              ghost.y + a.dy - pacman.current.y
+            );
+            const db = Math.hypot(
+              ghost.x + b.dx - pacman.current.x,
+              ghost.y + b.dy - pacman.current.y
+            );
             return da - db;
           });
-          let valid = directions.filter(d => canMove(ghost.x + d.dx, ghost.y + d.dy));
+          let valid = directions.filter((d) =>
+            canMove(ghost.x + d.dx, ghost.y + d.dy)
+          );
           if (valid.length) {
             // Try to move closer to Pacman
             let move = valid[0];
@@ -215,7 +238,7 @@ function Pacman() {
       });
 
       // Win condition
-      if (pellets.current.every(p => p.eaten)) {
+      if (pellets.current.every((p) => p.eaten)) {
         setGameOver(true);
       }
 
@@ -224,7 +247,7 @@ function Pacman() {
 
     update();
     return () => cancelAnimationFrame(animationId);
-  }, [gameOver]);
+  });
 
   // Keyboard controls
   useEffect(() => {
@@ -232,45 +255,91 @@ function Pacman() {
       if (gameOver) return;
       let dx = pacman.current.dx;
       let dy = pacman.current.dy;
-      if (e.key === "ArrowUp" && canMove(pacman.current.x, pacman.current.y - 1)) {
-        dx = 0; dy = -1;
-      } else if (e.key === "ArrowDown" && canMove(pacman.current.x, pacman.current.y + 1)) {
-        dx = 0; dy = 1;
-      } else if (e.key === "ArrowLeft" && canMove(pacman.current.x - 1, pacman.current.y)) {
-        dx = -1; dy = 0;
-      } else if (e.key === "ArrowRight" && canMove(pacman.current.x + 1, pacman.current.y)) {
-        dx = 1; dy = 0;
+      if (
+        e.key === "ArrowUp" &&
+        canMove(pacman.current.x, pacman.current.y - 1)
+      ) {
+        dx = 0;
+        dy = -1;
+      } else if (
+        e.key === "ArrowDown" &&
+        canMove(pacman.current.x, pacman.current.y + 1)
+      ) {
+        dx = 0;
+        dy = 1;
+      } else if (
+        e.key === "ArrowLeft" &&
+        canMove(pacman.current.x - 1, pacman.current.y)
+      ) {
+        dx = -1;
+        dy = 0;
+      } else if (
+        e.key === "ArrowRight" &&
+        canMove(pacman.current.x + 1, pacman.current.y)
+      ) {
+        dx = 1;
+        dy = 0;
       }
       pacman.current.dx = dx;
       pacman.current.dy = dy;
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [gameOver]);
+  });
 
   function handleRestart() {
-  pacman.current.x = 1;
-  pacman.current.y = 1;
-  pacman.current.dx = 1;
-  pacman.current.dy = 0;
-  setScore(0);
-  setGameOver(false);
-  pellets.current.forEach(p => p.eaten = false);
+    pacman.current.x = 1;
+    pacman.current.y = 1;
+    pacman.current.dx = 1;
+    pacman.current.dy = 0;
+    setScore(0);
+    setGameOver(false);
+    pellets.current.forEach((p) => (p.eaten = false));
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: 24, width: "100vw", maxWidth: "100vw", overflowX: "hidden" }}>
+    <div
+      style={{
+        textAlign: "center",
+        marginTop: 24,
+        width: "100vw",
+        maxWidth: "100vw",
+        overflowX: "hidden",
+      }}
+    >
       <canvas
         ref={canvasRef}
         width={cols * tileSize}
         height={rows * tileSize}
-        style={{ background: "#111", borderRadius: 16, boxShadow: "0 2px 12px #000", display: "block", margin: "0 auto", width: "100%", maxWidth: "100vw" }}
+        style={{
+          background: "#111",
+          borderRadius: 16,
+          boxShadow: "0 2px 12px #000",
+          display: "block",
+          margin: "0 auto",
+          width: "100%",
+          maxWidth: "100vw",
+        }}
       />
-      <div style={{ color: "#fff", fontWeight: 700, fontSize: "1.2em", marginTop: 12 }}>
+      <div
+        style={{
+          color: "#fff",
+          fontWeight: 700,
+          fontSize: "1.2em",
+          marginTop: 12,
+        }}
+      >
         Score: {score}
         {gameOver && (
-          <div style={{ color: "#f43f5e", fontWeight: 700, fontSize: "1.1em", marginTop: 8 }}>
-            {pellets.current.every(p => p.eaten) ? "You Win!" : "Game Over!"}
+          <div
+            style={{
+              color: "#f43f5e",
+              fontWeight: 700,
+              fontSize: "1.1em",
+              marginTop: 8,
+            }}
+          >
+            {pellets.current.every((p) => p.eaten) ? "You Win!" : "Game Over!"}
           </div>
         )}
       </div>
@@ -284,9 +353,11 @@ function Pacman() {
           background: "#ffe600",
           color: "#222",
           fontWeight: 700,
-          cursor: "pointer"
+          cursor: "pointer",
         }}
-      >Restart</button>
+      >
+        Restart
+      </button>
     </div>
   );
 }

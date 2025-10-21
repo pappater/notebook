@@ -7,12 +7,13 @@ function HamburgerMenu({ darkMode, onToken }) {
   const [modalOpen, setModalOpen] = useState(false);
   // Default to Articlay URL
   const links = [
+    { name: "Articlay", url: "https://pappater.github.io/articlay/" },
+    { name: "Niche", url: "https://pappater.github.io/niche/" },
     { name: "Yearify", url: "https://pappater.github.io/yearprogress/" },
     { name: "Blog", url: "https://pappater.github.io/blog/" },
-    { name: "Articlay", url: "https://pappater.github.io/articlay/" },
     { name: "Pacman", url: "__PACMAN__" },
   ];
-  const defaultMenuIdx = 2; // Articlay
+  const defaultMenuIdx = 0; // Articlay
   const [iframeUrl, setIframeUrl] = useState(links[defaultMenuIdx].url);
   const [selectedIdx, setSelectedIdx] = useState(defaultMenuIdx);
   // Import Pacman component
@@ -88,25 +89,27 @@ function HamburgerMenu({ darkMode, onToken }) {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "flex-start",
+                      minHeight: "100vh",
+                      boxSizing: "border-box",
+                      position: "relative",
                     }
               }
             >
+              {/* Sticky X and expand/collapse buttons at top */}
               <div
-                style={isMobile ? {
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
+                style={{
                   width: "100%",
-                  position: "relative",
-                  gap: 0,
-                  margin: 0,
-                  padding: 0,
-                } : {
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 10,
+                  background: darkMode ? "#23232a" : "#f5f5f5",
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  width: "100%",
-                  position: "relative",
+                  flexDirection: isMobile ? "row" : "column",
+                  alignItems: isMobile ? "center" : "flex-start",
+                  paddingTop: isMobile ? 0 : "16px",
+                  paddingBottom: isMobile ? 0 : "16px",
+                  paddingLeft: isMobile ? 0 : "8px",
+                  paddingRight: isMobile ? 0 : "8px",
                 }}
               >
                 <button
@@ -116,7 +119,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                     fontSize: "6rem",
                     background: "transparent",
                     border: "none",
-                    color: "#222",
+                    color: darkMode ? "#f3f3f3" : "#222",
                     cursor: "pointer",
                     marginBottom: isMobile ? 0 : collapsed ? "56px" : "32px",
                     marginTop: isMobile ? 0 : collapsed ? "0px" : 0,
@@ -142,7 +145,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                       fontSize: "2.2rem",
                       background: "transparent",
                       border: "none",
-                      color: "#222",
+                      color: darkMode ? "#f3f3f3" : "#222",
                       cursor: "pointer",
                       marginTop: "40px",
                       alignSelf: "flex-start",
@@ -165,7 +168,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                       fontSize: "2.2rem",
                       background: "transparent",
                       border: "none",
-                      color: "#222",
+                      color: darkMode ? "#f3f3f3" : "#222",
                       cursor: "pointer",
                       marginTop: "32px",
                       marginBottom: "32px",
@@ -180,107 +183,126 @@ function HamburgerMenu({ darkMode, onToken }) {
                   </button>
                 )}
               </div>
-              <ul
-                className="modal-menu-list"
-                style={
-                  isMobile
-                    ? {
-                        flexDirection: "row",
-                        alignItems: "flex-start",
-                        justifyContent: "flex-start",
-                        width: "100%",
-                        padding: 0,
-                        margin: 0,
-                        overflowX: "auto",
-                        overflowY: "hidden",
-                        maxWidth: "100vw",
-                      }
-                    : { paddingLeft: 0 }
-                }
+              {/* Scrollable menu list below sticky header */}
+              <div
+                style={{
+                  width: "100%",
+                  flex: 1,
+                  overflowY: !isMobile ? "auto" : "hidden",
+                }}
               >
-                <li>
-                  {!isMobile && collapsed ? (
-                    <div
-                      className="modal-menu-btn"
-                      style={{
-                        fontSize: "3.2rem",
-                        fontWeight: 900,
-                        marginBottom: 24,
-                        width: "100%",
-                        background: "none",
-                        border: "none",
-                        color: "#222",
-                        textAlign: "left",
-                        padding: "18px 0",
-                        borderRadius: 8,
-                        letterSpacing: 1,
-                        cursor: "pointer",
-                        transition: "background 0.2s",
-                        position: "relative",
-                      }}
-                    >
-                      <span title="GitHub Login" style={{ cursor: "pointer" }}>
-                        G
-                      </span>
-                    </div>
-                  ) : (
-                    <GithubAuthButton
-                      onToken={onToken}
-                      className="modal-menu-btn"
-                      style={{
-                        fontSize: "2rem",
-                        fontWeight: 700,
-                        marginBottom: 24,
-                        width: "100%",
-                        background: "none",
-                        border: "none",
-                        color: "#222",
-                        textAlign: "left",
-                        padding: "18px 0",
-                        borderRadius: 8,
-                        letterSpacing: 1,
-                        cursor: "pointer",
-                        transition: "background 0.2s",
-                      }}
-                    />
-                  )}
-                </li>
-                {links.map((link, idx) => (
-                  <li key={idx}>
-                    <button
-                      className={`modal-menu-btn${
-                        selectedIdx === idx ? " selected" : ""
-                      }`}
-                      onClick={() => handleMenuClick(link.url, idx)}
-                      style={{
-                        fontSize: !isMobile && collapsed ? "3.2rem" : "2rem",
-                        fontWeight: 900,
-                        marginBottom: 4,
-                        width: "100%",
-                        background: selectedIdx === idx ? "#e0e7ff" : "none",
-                        border:
-                          selectedIdx === idx ? "2px solid #6366f1" : "none",
-                        color: selectedIdx === idx ? "#3730a3" : "#222",
-                        textAlign: "left",
-                        padding: selectedIdx === idx ? "18px 18px" : "18px 0",
-                        borderRadius: 8,
-                        letterSpacing: 1,
-                        cursor: "pointer",
-                        transition:
-                          "background 0.2s, border 0.2s, color 0.2s, padding 0.2s",
-                        position: "relative",
-                      }}
-                      title={!isMobile && collapsed ? link.name : undefined}
-                    >
-                      {!isMobile && collapsed ? (
-                        <span title={link.name}>{link.name[0]}</span>
-                      ) : (
-                        link.name
-                      )}
-                    </button>
+                <ul
+                  className="modal-menu-list"
+                  style={
+                    isMobile
+                      ? {
+                          flexDirection: "row",
+                          alignItems: "flex-start",
+                          justifyContent: "flex-start",
+                          width: "100%",
+                          padding: 0,
+                          margin: 0,
+                          overflowX: "auto",
+                          overflowY: "hidden",
+                          maxWidth: "100vw",
+                        }
+                      : { paddingLeft: 0 }
+                  }
+                >
+                  <li>
+                    {!isMobile && collapsed ? (
+                      <div
+                        className="modal-menu-btn"
+                        style={{
+                          fontSize: "3.2rem",
+                          fontWeight: 900,
+                          marginBottom: 24,
+                          width: "100%",
+                          background: "none",
+                          border: "none",
+                          color: darkMode ? "#f3f3f3" : "#222",
+                          textAlign: "left",
+                          padding: "18px 0",
+                          borderRadius: 8,
+                          letterSpacing: 1,
+                          cursor: "pointer",
+                          transition: "background 0.2s",
+                          position: "relative",
+                        }}
+                      >
+                        <span
+                          title="GitHub Login"
+                          style={{ cursor: "pointer" }}
+                        >
+                          G
+                        </span>
+                      </div>
+                    ) : (
+                      <GithubAuthButton
+                        onToken={onToken}
+                        className="modal-menu-btn"
+                        style={{
+                          fontSize: "2rem",
+                          fontWeight: 700,
+                          marginBottom: 24,
+                          width: "100%",
+                          background: "none",
+                          border: "none",
+                          color: darkMode ? "#f3f3f3" : "#222",
+                          textAlign: "left",
+                          padding: "18px 0",
+                          borderRadius: 8,
+                          letterSpacing: 1,
+                          cursor: "pointer",
+                          transition: "background 0.2s",
+                        }}
+                      />
+                    )}
                   </li>
-                ))}
-              </ul>
+                  {links.map((link, idx) => (
+                    <li key={idx}>
+                      <button
+                        className={`modal-menu-btn${
+                          selectedIdx === idx ? " selected" : ""
+                        }`}
+                        onClick={() => handleMenuClick(link.url, idx)}
+                        style={{
+                          fontSize: !isMobile && collapsed ? "3.2rem" : "2rem",
+                          fontWeight: 900,
+                          marginBottom: 4,
+                          width: "100%",
+                          background: selectedIdx === idx ? "#e0e7ff" : "none",
+                          border:
+                            selectedIdx === idx ? "2px solid #6366f1" : "none",
+                          color:
+                            selectedIdx === idx
+                              ? darkMode
+                                ? "#fff"
+                                : "#3730a3"
+                              : darkMode
+                              ? "#f3f3f3"
+                              : "#222",
+                          textAlign: "left",
+                          padding: selectedIdx === idx ? "18px 18px" : "18px 0",
+                          borderRadius: 8,
+                          letterSpacing: 1,
+                          cursor: "pointer",
+                          transition:
+                            "background 0.2s, border 0.2s, color 0.2s, padding 0.2s",
+                          position: "relative",
+                        }}
+                        title={!isMobile && collapsed ? link.name : undefined}
+                      >
+                        {!isMobile && collapsed ? (
+                          <span title={link.name}>{link.name[0]}</span>
+                        ) : (
+                          link.name
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
             <div
               className="fullscreen-modal-right"
@@ -298,9 +320,18 @@ function HamburgerMenu({ darkMode, onToken }) {
                   : {}
               }
             >
-              {iframeUrl && (
-                iframeUrl === "__PACMAN__" ? (
-                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: darkMode ? "#111" : "#fff" }}>
+              {iframeUrl &&
+                (iframeUrl === "__PACMAN__" ? (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: darkMode ? "#111" : "#fff",
+                    }}
+                  >
                     <Pacman />
                   </div>
                 ) : (
@@ -327,8 +358,7 @@ function HamburgerMenu({ darkMode, onToken }) {
                           }
                     }
                   />
-                )
-              )}
+                ))}
             </div>
           </div>
         </div>
