@@ -11,13 +11,13 @@ function HamburgerMenu({ darkMode, onToken }) {
     { name: "Niche", url: "https://pappater.github.io/niche/" },
     { name: "Yearify", url: "https://pappater.github.io/yearprogress/" },
     { name: "Blog", url: "https://pappater.github.io/blog/" },
-    { name: "Pacman", url: "__PACMAN__" },
+    { name: "Mockpoet", url: "https://pappater.github.io/mockpoet/" },
+    { name: "Horse", url: "https://pappater.github.io/horse/" },
+    { name: "Fish", url: "https://pappater.github.io/fish/" },
   ];
   const defaultMenuIdx = 0; // Articlay
   const [iframeUrl, setIframeUrl] = useState(links[defaultMenuIdx].url);
   const [selectedIdx, setSelectedIdx] = useState(defaultMenuIdx);
-  // Import Pacman component
-  const Pacman = require("./Pacman").default;
 
   const openModal = () => {
     setModalOpen(true);
@@ -104,10 +104,11 @@ function HamburgerMenu({ darkMode, onToken }) {
                   zIndex: 10,
                   background: darkMode ? "#23232a" : "#f5f5f5",
                   display: "flex",
-                  flexDirection: isMobile ? "row" : "column",
-                  alignItems: isMobile ? "center" : "flex-start",
+                  flexDirection: collapsed ? "column" : "row",
+                  alignItems: "center",
+                  justifyContent: collapsed ? "center" : "space-between",
                   paddingTop: isMobile ? 0 : "16px",
-                  paddingBottom: isMobile ? 0 : "16px",
+                  paddingBottom: isMobile ? 0 : collapsed ? "8px" : "16px",
                   paddingLeft: isMobile ? 0 : "8px",
                   paddingRight: isMobile ? 0 : "8px",
                 }}
@@ -121,10 +122,9 @@ function HamburgerMenu({ darkMode, onToken }) {
                     border: "none",
                     color: darkMode ? "#f3f3f3" : "#222",
                     cursor: "pointer",
-                    marginBottom: isMobile ? 0 : collapsed ? "56px" : "32px",
-                    marginTop: isMobile ? 0 : collapsed ? "0px" : 0,
-                    marginLeft: isMobile ? 0 : collapsed ? "8px" : 0,
-                    alignSelf: "flex-start",
+                    marginBottom: collapsed ? "8px" : 0,
+                    marginTop: 0,
+                    marginLeft: isMobile ? 0 : collapsed ? 0 : "8px",
                     fontWeight: 900,
                     padding: 0,
                     display: "block",
@@ -147,8 +147,8 @@ function HamburgerMenu({ darkMode, onToken }) {
                       border: "none",
                       color: darkMode ? "#f3f3f3" : "#222",
                       cursor: "pointer",
-                      marginTop: "40px",
-                      alignSelf: "flex-start",
+                      marginTop: 0,
+                      marginBottom: 0,
                       fontWeight: 700,
                       padding: 0,
                     }}
@@ -170,9 +170,8 @@ function HamburgerMenu({ darkMode, onToken }) {
                       border: "none",
                       color: darkMode ? "#f3f3f3" : "#222",
                       cursor: "pointer",
-                      marginTop: "32px",
-                      marginBottom: "32px",
-                      alignSelf: "center",
+                      marginTop: 0,
+                      marginBottom: 0,
                       fontWeight: 700,
                       padding: 0,
                       display: "block",
@@ -320,45 +319,31 @@ function HamburgerMenu({ darkMode, onToken }) {
                   : {}
               }
             >
-              {iframeUrl &&
-                (iframeUrl === "__PACMAN__" ? (
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      background: darkMode ? "#111" : "#fff",
-                    }}
-                  >
-                    <Pacman />
-                  </div>
-                ) : (
-                  <iframe
-                    src={iframeUrl}
-                    title="Application Viewer"
-                    className="iframe-modal-frame"
-                    style={
-                      isMobile
-                        ? {
-                            width: "100vw",
-                            height: "100%",
-                            minWidth: 0,
-                            minHeight: 0,
-                            borderRadius: 0,
-                            display: "block",
-                            border: "none",
-                          }
-                        : {
-                            width: "100%",
-                            height: "100%",
-                            border: "none",
-                            borderRadius: 0,
-                          }
-                    }
-                  />
-                ))}
+              {iframeUrl && (
+                <iframe
+                  src={iframeUrl}
+                  title="Application Viewer"
+                  className="iframe-modal-frame"
+                  style={
+                    isMobile
+                      ? {
+                          width: "100vw",
+                          height: "100%",
+                          minWidth: 0,
+                          minHeight: 0,
+                          borderRadius: 0,
+                          display: "block",
+                          border: "none",
+                        }
+                      : {
+                          width: "100%",
+                          height: "100%",
+                          border: "none",
+                          borderRadius: 0,
+                        }
+                  }
+                />
+              )}
             </div>
           </div>
         </div>
